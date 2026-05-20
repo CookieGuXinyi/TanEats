@@ -1,0 +1,39 @@
+<!--pages/AITalk/AiTalk.wxml-->
+<view class="container">
+  <!-- 聊天头部 -->
+  <view class="chat-header">
+    <view class="ai-avatar">
+      <text style="font-size: 28px;">🤖</text>
+    </view>
+    <view class="ai-info">
+      <text class="ai-name">吃货机器人</text>
+      <text class="ai-desc">你的专属美食管家</text>
+    </view>
+  </view>
+
+  <!-- 聊天记录区域 -->
+  <scroll-view class="chat-area" scroll-y scroll-into-view="{{scrollToView}}">
+    <view class="message-item" wx:for="{{messages}}" wx:key="id">
+      <view class="message-bubble {{item.isUser ? 'user-bubble' : 'ai-bubble'}}">
+        <text>{{item.content}}</text>
+      </view>
+      <text class="message-time">{{item.time}}</text>
+    </view>
+    <view id="bottom"></view>
+  </scroll-view>
+
+  <!-- 快捷问题 -->
+  <view class="quick-questions">
+    <view class="quick-item" wx:for="{{quickQuestions}}" wx:key="*this" bindtap="sendQuickQuestion" data-question="{{item}}">
+      {{item}}
+    </view>
+  </view>
+
+  <!-- 输入区域 -->
+  <view class="input-area">
+    <input class="input" placeholder="问点什么..." bindinput="onInput" value="{{inputValue}}" confirm-type="send" bindconfirm="sendMessage"/>
+    <view class="send-btn {{inputValue ? 'active' : ''}}" bindtap="sendMessage">
+      <text>📤</text>
+    </view>
+  </view>
+</view>

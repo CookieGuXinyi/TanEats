@@ -1,0 +1,75 @@
+<!--pages/Discover/Discover.wxml-->
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <text>🔍</text>
+    <text class="search-text">搜索评价、笔记...</text>
+  </view>
+
+  <!-- 热门推荐卡片 -->
+  <view class="card">
+    <view class="card-title">
+      <text>⭐</text>
+      <text>今日热门推荐</text>
+      <text class="badge">同学说好</text>
+    </view>
+
+    <!-- 评价列表 -->
+    <view class="review-item" wx:for="{{reviews}}" wx:key="id">
+      <view class="review-header">
+        <view class="reviewer-info">
+          <text>👤</text>
+          <text class="reviewer-name">{{item.reviewer}}</text>
+        </view>
+        <view class="rating">
+          <text>⭐</text>
+          <text>{{item.rating}}</text>
+        </view>
+      </view>
+      <view class="review-content">{{item.content}}</view>
+      <view class="review-footer">
+        <text class="stall-link">📍 {{item.stallName}}</text>
+        <text class="review-time">{{item.time}}</text>
+      </view>
+    </view>
+
+    <view class="write-btn" bindtap="goToWriteReview">
+      <text>✏️</text>
+      写点评 + 分享美食瞬间
+    </view>
+  </view>
+
+  <!-- 美食视频/直播回放 -->
+  <view class="card">
+    <view class="card-title">
+      <text>📹</text>
+      <text>沉浸式逛吃Vlog</text>
+    </view>
+    <view class="video-grid">
+      <view class="video-item" wx:for="{{videos}}" wx:key="id">
+        <view class="video-thumb">
+          <text>▶️</text>
+        </view>
+        <text class="video-title">{{item.title}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 热门话题 -->
+  <view class="card">
+    <view class="flex-between">
+      <view class="card-title">
+        <text>🔥</text>
+        <text>热门话题</text>
+      </view>
+      <text class="more-text">更多 ></text>
+    </view>
+    <view class="topic-list">
+      <view class="topic-item" wx:for="{{topics}}" wx:key="id">
+        <text>#</text>
+        <text>{{item.name}}</text>
+        <text class="topic-count">{{item.count}}人参与</text>
+      </view>
+    </view>
+  </view>
+</view>

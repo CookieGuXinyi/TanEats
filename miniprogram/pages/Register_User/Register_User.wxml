@@ -1,0 +1,119 @@
+<!--pages/Register_User/Register_User.wxml-->
+<view class="container">
+  <!-- 顶部装饰 -->
+  <view class="top-decoration">
+    <view class="logo">
+      <text>🍜</text>
+      <text class="logo-text">TanEats</text>
+    </view>
+    <view class="slogan">智慧美食街 · 发现身边的美味</view>
+  </view>
+
+  <!-- 表单卡片 -->
+  <view class="form-card">
+    <!-- 切换登录/注册 -->
+    <view class="tab-switch">
+      <view class="tab-item {{currentTab === 'login' ? 'active' : ''}}" bindtap="switchTab" data-tab="login">
+        登录
+      </view>
+      <view class="tab-item {{currentTab === 'register' ? 'active' : ''}}" bindtap="switchTab" data-tab="register">
+        注册
+      </view>
+    </view>
+
+    <!-- 登录表单 -->
+    <block wx:if="{{currentTab === 'login'}}">
+      <view class="form-item">
+        <view class="input-icon">📱</view>
+        <input class="form-input" placeholder="手机号" bindinput="onPhoneInput" value="{{loginPhone}}" type="number" maxlength="11"/>
+      </view>
+      <view class="form-item">
+        <view class="input-icon">🔒</view>
+        <input class="form-input" placeholder="密码" bindinput="onPasswordInput" value="{{loginPassword}}" password="true"/>
+      </view>
+      <view class="flex-between">
+        <view class="remember-me" bindtap="toggleRemember">
+          <view class="checkbox {{rememberMe ? 'checked' : ''}}">
+            <text wx:if="{{rememberMe}}">✓</text>
+          </view>
+          <text>记住密码</text>
+        </view>
+        <view class="forgot-pwd" bindtap="forgotPassword">忘记密码？</view>
+      </view>
+      <view class="login-btn {{canLogin ? 'active' : ''}}" bindtap="handleLogin">
+        登录
+      </view>
+      <!-- <button class="wx-login-btn"  bindtap="doWxLogin">
+        💚 微信一键登录
+      </button> -->
+    </block>
+
+    <!-- 注册表单 -->
+    <block wx:if="{{currentTab === 'register'}}">
+      <view class="form-item">
+        <view class="input-icon">👤</view>
+        <input class="form-input" placeholder="用户名（必填）" bindinput="onUsernameInput" value="{{username}}"/>
+      </view>
+      <view class="form-item">
+        <view class="input-icon">📱</view>
+        <input class="form-input" placeholder="手机号" bindinput="onRegPhoneInput" value="{{regPhone}}" type="number" maxlength="11"/>
+      </view>
+      <view class="form-item">
+        <view class="input-icon">🔒</view>
+        <input class="form-input" placeholder="密码（至少6位）" bindinput="onRegPasswordInput" value="{{regPassword}}" password="true"/>
+      </view>
+      <view class="form-item">
+        <view class="input-icon">✓</view>
+        <input class="form-input" placeholder="确认密码" bindinput="onConfirmPasswordInput" value="{{confirmPassword}}" password="true"/>
+      </view>
+      
+      <!-- 验证码 -->
+      <view class="form-item code-item">
+        <view class="input-icon">📧</view>
+        <input class="form-input code-input" placeholder="验证码" bindinput="onCodeInput" value="{{verifyCode}}"/>
+        <view class="get-code {{canGetCode ? 'active' : ''}}" bindtap="getVerifyCode">
+          {{codeText}}
+        </view>
+      </view>
+
+      <!-- 用户协议 -->
+      <view class="agree-terms" bindtap="toggleAgree">
+        <view class="checkbox {{agreeTerms ? 'checked' : ''}}">
+          <text wx:if="{{agreeTerms}}">✓</text>
+        </view>
+        <text>我已阅读并同意</text>
+        <text class="link" bindtap="showTerms">《用户协议》</text>
+        <text>和</text>
+        <text class="link" bindtap="showPrivacy">《隐私政策》</text>
+      </view>
+
+      <view class="register-btn {{canRegister ? 'active' : ''}}" bindtap="handleRegister">
+        注册
+      </view>
+      
+      <!-- 第三方注册 -->
+      <view class="other-register">
+        <view class="divider">
+          <view class="line"></view>
+          <text>其他方式注册</text>
+          <view class="line"></view>
+        </view>
+        <view class="social-icons">
+          <view class="social-icon" bindtap="wxRegister">
+            <text>💚</text>
+            <text>微信</text>
+          </view>
+          <view class="social-icon" bindtap="qqRegister">
+            <text>🐧</text>
+            <text>QQ</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 提示信息 -->
+  <view class="footer-note">
+    注册即代表您同意TanEats的服务条款
+  </view>
+</view>

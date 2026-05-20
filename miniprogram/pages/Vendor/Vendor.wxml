@@ -1,0 +1,126 @@
+<!--pages/Vendor/Vendor.wxml-->
+<view class="container" wx:if="{{shop}}">
+  
+  <!-- 店铺信息卡片 -->
+  <view class="shop-card">
+    <view class="shop-header">
+      <view class="shop-icon">🏪</view>
+      <view class="shop-info">
+        <text class="shop-name">{{shop.shopName}}</text>
+        <text class="shop-status {{isOpen ? 'open' : 'closed'}}">{{isOpen ? '营业中' : '已打烊'}}</text>
+      </view>
+    </view>
+    <view class="shop-detail">
+      <view class="detail-row">
+        <text>📅 营业时间：</text>
+        <text>{{shop.businessHours}}</text>
+      </view>
+      <view class="detail-row">
+        <text>📍 店铺位置：</text>
+        <text>{{shop.location}}</text>
+      </view>
+      <view class="detail-row">
+        <text>📝 店铺简介：</text>
+        <text>{{shop.description}}</text>
+      </view>
+    </view>
+    <view class="edit-btn" bindtap="editShopInfo">✏️ 编辑店铺信息</view>
+  </view>
+
+  <!-- 商品管理 -->
+  <view class="section-title">
+    <text>🍜 商品列表</text>
+    <view class="add-btn" bindtap="addProduct">+ 添加商品</view>
+  </view>
+
+  <!-- 商品列表 -->
+  <view class="product-list">
+    <view class="product-item" wx:for="{{products}}" wx:key="_id">
+      <view class="product-info">
+        <text class="product-name">{{item.name}}</text>
+        <text class="product-price">¥{{item.price}}</text>
+        <text class="product-desc">{{item.description}}</text>
+      </view>
+      <view class="product-actions">
+        <text class="edit" bindtap="editProduct" data-id="{{item._id}}">✏️</text>
+        <text class="delete" bindtap="deleteProduct" data-id="{{item._id}}">🗑️</text>
+        <switch class="status-switch" checked="{{item.isAvailable}}" bindchange="toggleProductStatus" data-id="{{item._id}}" color="#ff7a1c"/>
+      </view>
+    </view>
+  </view>
+
+  <!-- 暂无商品 -->
+  <view class="empty-state" wx:if="{{products.length === 0}}">
+    <text>📦</text>
+    <text>暂无商品，点击上方按钮添加</text>
+  </view>
+
+</view>
+
+<!-- 未找到店铺 -->
+<view class="no-shop" wx:else>
+  <text>🏪</text>
+  <text>您还没有店铺</text>
+  <view class="apply-btn" bindtap="goToVendorRegister">申请成为摊主</view>
+</view>
+
+<!-- 编辑店铺弹窗 -->
+<view class="modal-mask" wx:if="{{showShopModal}}">
+  <view class="modal-container" catchtap="">
+    <view class="modal-title">编辑店铺信息</view>
+    <view class="modal-content">
+      <view class="modal-item">
+        <text class="modal-label">店铺名称 <text class="required">*</text></text>
+        <input class="modal-input" placeholder="店铺名称" bindinput="onEditShopName" value="{{editShop.shopName}}"/>
+      </view>
+      <view class="modal-item">
+        <text class="modal-label">营业时间 <text class="required">*</text></text>
+        <input class="modal-input" placeholder="例：周一 17:00-23:00" bindinput="onEditBusinessHours" value="{{editShop.businessHours}}"/>
+      </view>
+      <view class="modal-item">
+        <text class="modal-label">店铺位置 <text class="required">*</text></text>
+        <input class="modal-input" placeholder="店铺位置" bindinput="onEditLocation" value="{{editShop.location}}"/>
+      </view>
+      <view class="modal-item">
+        <text class="modal-label">店铺简介</text>
+        <textarea class="modal-textarea" placeholder="店铺简介" bindinput="onEditDescription" value="{{editShop.description}}"/>
+      </view>
+    </view>
+    <view class="modal-buttons">
+      <view class="modal-cancel" bindtap="closeShopModal">取消</view>
+      <view class="modal-confirm" bindtap="saveShopInfo">保存</view>
+    </view>
+  </view>
+</view>
+
+<!-- 添加/编辑商品弹窗 -->
+<view class="modal-mask" wx:if="{{showProductModal}}">
+  <view class="modal-container" catchtap="">
+    <view class="modal-title">{{isEditProduct ? '编辑商品' : '添加商品'}}</view>
+    <view class="modal-content">
+      <view class="modal-item">
+        <text class="modal-label">商品名称 <text class="required">*</text></text>
+        <input class="modal-input" placeholder="商品名称" bindinput="onProductName" value="{{productForm.name}}"/>
+      </view>
+      <view class="modal-item">
+        <text class="modal-label">价格（元）<text class="required">*</text></text>
+        <input class="modal-input" type="digit" placeholder="价格" bindinput="onProductPrice" value="{{productForm.price}}"/>
+      </view>
+      <view class="modal-item">
+        <text class="modal-label">商品描述</text>
+        <textarea class="modal-textarea" placeholder="商品描述" bindinput="onProductDesc" value="{{productForm.description}}"/>
+      </view>
+      <view class="modal-item">
+        <text class="modal-label">商品图片</text>
+        <view class="upload-img" bindtap="uploadProductImage">
+          <text wx:if="{{!productForm.imageUrl}}">+ 上传图片</text>
+          <image wx:else src="{{productForm.imageUrl}}" mode="aspectFill"></image>
+        </view>
+      </view>
+    </view>
+    <view class="modal-buttons">
+      <view class="modal-cancel" bindtap="closeProductModal">取消</view>
+      <view class="modal-confirm" bindtap="saveProduct">保存</view>
+    </view>
+  </view>
+</view>

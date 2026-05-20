@@ -1,0 +1,176 @@
+<!--pages/Map/Map.wxml-->
+<view class="container">
+  <!-- 地图头部 -->
+  <view class="map-hero">
+    <view class="hero-main">
+      <view>
+        <view class="hero-title">校园摊位地图</view>
+        <view class="hero-desc">实时查看摊位位置 · 排队人数 · 优惠状态</view>
+      </view>
+      <view class="hero-icon">🗺️</view>
+    </view>
+    <view class="hero-stats">
+      <view class="hero-stat">
+        <text class="hero-value">{{mapStats.openCount}}</text>
+        <text class="hero-label">营业中</text>
+      </view>
+      <view class="hero-stat">
+        <text class="hero-value">{{mapStats.avgWait}}min</text>
+        <text class="hero-label">平均等待</text>
+      </view>
+      <view class="hero-stat">
+        <text class="hero-value">{{mapStats.couponCount}}</text>
+        <text class="hero-label">优惠摊位</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <text>🔍</text>
+    <input
+      class="search-input"
+      placeholder="搜索摊位、品类、招牌菜..."
+      value="{{searchText}}"
+      bindinput="onSearchInput"
+      confirm-type="search"
+    />
+    <text class="clear-btn" wx:if="{{searchText}}" bindtap="clearSearch">×</text>
+  </view>
+
+  <!-- 筛选标签 -->
+  <scroll-view class="filter-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+    <view class="filter-list">
+      <view
+        class="filter-item {{selectedFilter === item.key ? 'active' : ''}}"
+        wx:for="{{filters}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        bindtap="selectFilter"
+      >
+        <text>{{item.icon}}</text>
+        <text>{{item.label}}</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 实时地图 -->
+  <view class="map-card">
+    <map
+      id="campusMap"
+      class="campus-map"
+      latitude="{{latitude}}"
+      longitude="{{longitude}}"
+      scale="{{scale}}"
+      markers="{{markers}}"
+      show-location
+      enable-zoom
+      enable-scroll
+      bindmarkertap="onMarkerTap"
+    ></map>
+    <view class="map-actions">
+      <view class="map-action" bindtap="useCurrentLocation">
+        <text>📍</text>
+        <text>定位</text>
+      </view>
+      <view class="map-action primary" bindtap="navigateToStall">
+        <text>🧭</text>
+        <text>去这里</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 选中摊位详情 -->
+  <view class="stall-card" wx:if="{{selectedStall}}">
+    <view class="stall-header">
+      <view>
+        <view class="stall-name">{{selectedStall.name}}</view>
+        <view class="stall-meta">{{selectedStall.category}} · {{selectedStall.distance}}</view>
+      </view>
+      <view class="status-pill">{{selectedStall.status}}</view>
+    </view>
+
+    <view class="stall-data">
+      <view class="data-item">
+        <text class="data-value">{{selectedStall.queue}}</text>
+        <text class="data-label">排队人数</text>
+      </view>
+      <view class="data-item">
+        <text class="data-value">{{selectedStall.waitTime}}min</text>
+        <text class="data-label">预计等待</text>
+      </view>
+      <view class="data-item">
+        <text class="data-value">⭐ {{selectedStall.rating}}</text>
+        <text class="data-label">同学评分</text>
+      </view>
+    </view>
+
+    <view class="coupon-row" wx:if="{{selectedStall.hasCoupon}}">
+      <text>🎫</text>
+      <text>{{selectedStall.coupon}}</text>
+    </view>
+
+    <view class="tag-list">
+      <text class="tag" wx:for="{{selectedStall.tags}}" wx:key="*this">{{item}}</text>
+    </view>
+
+    <view class="action-grid">
+      <view class="action-btn" bindtap="callStall">
+        <text>📞</text>
+        <text>联系摊主</text>
+      </view>
+      <view class="action-btn" bindtap="joinGroupOrder">
+        <text>👥</text>
+        <text>发起拼单</text>
+      </view>
+      <view class="action-btn" bindtap="viewLive">
+        <text>📹</text>
+        <text>{{selectedStall.isLive ? '看直播' : '暂无直播'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- AI 推荐 -->
+  <view class="ai-card" bindtap="askAi">
+    <view class="flex-between">
+      <view class="card-title">
+        <text>🤖</text>
+        <text>AI 路线建议</text>
+      </view>
+      <text class="more-text">问一问 ></text>
+    </view>
+    <view class="ai-preview">
+      根据排队人数和优惠信息，推荐先买椰子冻，再去周姐炸串拼单，预计节省 8 分钟。
+    </view>
+  </view>
+
+  <!-- 附近摊位列表 -->
+  <view class="list-card">
+    <view class="card-title">
+      <text>📌</text>
+      <text>附近摊位</text>
+    </view>
+    <view
+      class="stall-list-item {{selectedStall && selectedStall.id === item.id ? 'selected' : ''}}"
+      wx:for="{{visibleStalls}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="selectStall"
+    >
+      <view class="list-left">
+        <text class="list-icon">{{item.queue <= 3 ? '⚡' : '🔥'}}</text>
+        <view>
+          <view class="list-name">{{item.name}}</view>
+          <view class="list-desc">{{item.address}}</view>
+        </view>
+      </view>
+      <view class="list-right">
+        <text>{{item.waitTime}}min</text>
+        <text>></text>
+      </view>
+    </view>
+    <view class="empty-state" wx:if="{{visibleStalls.length === 0}}">
+      <text>暂未找到匹配摊位</text>
+    </view>
+  </view>
+</view>

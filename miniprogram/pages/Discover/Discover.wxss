@@ -1,0 +1,161 @@
+/* pages/Discover/Discover.wxss */
+.search-bar {
+  background: #f5f5f5;
+  border-radius: 30px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #999;
+}
+
+.search-text {
+  font-size: 14px;
+  color: #aaa;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.badge {
+  background-color: #ffefe5;
+  color: #ff7a1c;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  margin-left: 8px;
+}
+
+.review-item {
+  padding: 14px 0;
+  border-bottom: 0.5px solid #f0f0f0;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.reviewer-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #666;
+}
+
+.reviewer-name {
+  font-weight: 500;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.review-content {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.review-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #999;
+}
+
+.stall-link {
+  color: #ff7a1c;
+}
+
+.write-btn {
+  background: #f5f5f5;
+  border-radius: 30px;
+  text-align: center;
+  padding: 12px;
+  margin-top: 12px;
+  font-size: 14px;
+  color: #ff7a1c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.video-item {
+  text-align: center;
+}
+
+.video-thumb {
+  background: #f0f0f0;
+  border-radius: 12px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.video-title {
+  font-size: 12px;
+  color: #666;
+}
+
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.topic-item {
+  background: #f8f8f8;
+  padding: 8px 14px;
+  border-radius: 30px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.topic-count {
+  font-size: 11px;
+  color: #999;
+  margin-left: 4px;
+}
+
+.more-text {
+  font-size: 12px;
+  color: #ff7a1c;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

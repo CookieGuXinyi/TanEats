@@ -1,0 +1,52 @@
+<!--pages/MyApplications/MyApplications.wxml-->
+<view class="container">
+  <!-- 申请记录列表 -->
+  <block wx:if="{{applications.length > 0}}">
+    <view class="application-card" wx:for="{{applications}}" wx:key="_id">
+      <view class="card-header">
+        <text class="shop-name">{{item.shopName}}</text>
+        <view class="status {{item.status}}">
+          <text wx:if="{{item.status === 'pending'}}">⏳ 审核中</text>
+          <text wx:elif="{{item.status === 'approved'}}">✅ 已通过</text>
+          <text wx:elif="{{item.status === 'rejected'}}">❌ 未通过</text>
+        </view>
+      </view>
+      
+      <view class="card-info">
+        <view class="info-row">
+          <text>📅 提交时间：</text>
+          <text>{{item.submitTimeFormatted}}</text>
+        </view>
+        <view class="info-row" wx:if="{{item.reviewTime}}">
+          <text>🔍 审核时间：</text>
+          <text>{{item.reviewTimeFormatted}}</text>
+        </view>
+        <view class="info-row" wx:if="{{item.reviewComment}}">
+          <text>💬 审核意见：</text>
+          <text>{{item.reviewComment}}</text>
+        </view>
+      </view>
+      
+      <!-- 已通过的申请，显示摊位管理入口 -->
+      <view class="card-footer" wx:if="{{item.status === 'approved'}}">
+        <view class="action-btn" bindtap="goToVendorDashboard" data-id="{{item._id}}">
+          进入摊位管理
+        </view>
+      </view>
+      
+      <!-- 未通过的申请，显示重新申请按钮 -->
+      <view class="card-footer" wx:if="{{item.status === 'rejected'}}">
+        <view class="action-btn retry" bindtap="reapply">
+          重新申请
+        </view>
+      </view>
+    </view>
+  </block>
+  
+  <!-- 暂无申请记录 -->
+  <view class="empty-state" wx:else>
+    <text class="empty-icon">📋</text>
+    <text class="empty-text">暂无申请记录</text>
+    <view class="apply-btn" bindtap="goToVendorRegister">去申请</view>
+  </view>
+</view>

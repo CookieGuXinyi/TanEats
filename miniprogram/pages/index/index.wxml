@@ -1,0 +1,68 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <text>🔍</text>
+    <text class="search-text">搜索美食、店铺...</text>
+  </view>
+
+  <!-- 实时摊位地图卡片 -->
+  <view class="card" bindtap="goToMap">
+    <view class="flex-between">
+      <view class="card-title">
+        <text>📍</text>
+        <text>实时摊位地图</text>
+      </view>
+      <text class="badge">更新于刚刚</text>
+    </view>
+    <view class="map-placeholder">
+      <text style="font-size: 48px;">🗺️</text>
+      <text style="font-size: 12px; color: #999;">校园美食街热力图</text>
+    </view>
+  </view>
+
+  <!-- AI 吃货机器人入口 -->
+  <view class="card" bindtap="goToAiTalk">
+    <view class="flex-between">
+      <view class="card-title">
+        <text>🤖</text>
+        <text>吃货机器人 · 专属美食管家</text>
+      </view>
+      <text class="badge">AI问答</text>
+    </view>
+    <view class="ai-preview">
+      💬 “今晚想吃辣？附近火爆烤串排队少，酸辣粉还有折扣～”
+    </view>
+    <view class="primary-btn">问一问吃什么 🍜</view>
+  </view>
+
+  <!-- 热门摊位推荐 -->
+  <view class="card">
+    <view class="card-title">
+      <text>🔥</text>
+      <text>热门推荐</text>
+    </view>
+    <view class="stall-item" wx:for="{{hotStalls}}" wx:key="id">
+      <view class="stall-info">
+        <text class="stall-name">{{item.name}}</text>
+        <text class="live-tag" wx:if="{{item.isLive}}">直播中</text>
+      </view>
+      <view class="queue-info">👥 排队 {{item.queue}}人</view>
+    </view>
+  </view>
+
+  <!-- 拼单入口 -->
+  <view class="card" bindtap="goToOrderGroup">
+    <view class="flex-between">
+      <view class="card-title">
+        <text>👥</text>
+        <text>跨摊拼单 · 优惠组合</text>
+      </view>
+      <text>></text>
+    </view>
+    <view class="coupon-tags">
+      <text class="coupon-tag">炸串+奶茶 减3元</text>
+      <text class="coupon-tag">煎饼+烤肠 85折</text>
+    </view>
+  </view>
+</view>

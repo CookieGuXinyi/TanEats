@@ -1,0 +1,57 @@
+<!--pages/Message/Message.wxml-->
+<view class="container">
+  <!-- 优惠通知卡片 -->
+  <view class="card">
+    <view class="flex-between">
+      <view class="card-title">
+        <text>🎫</text>
+        <text>最新优惠</text>
+      </view>
+      <text class="badge">3条未读</text>
+    </view>
+    <view class="message-item" wx:for="{{coupons}}" wx:key="id">
+      <text>🏷️</text>
+      <text>{{item.content}}</text>
+    </view>
+  </view>
+
+  <!-- 摊主动态提醒 -->
+  <view class="card">
+    <view class="card-title">
+      <text>📊</text>
+      <text>摊主动态</text>
+    </view>
+    <view class="message-item" wx:for="{{vendorAlerts}}" wx:key="id">
+      <text>📢</text>
+      <text>{{item.content}}</text>
+    </view>
+  </view>
+
+  <!-- 拼单小助手 -->
+  <view class="card" bindtap="goToOrderGroup">
+    <view class="flex-between">
+      <view class="card-title">
+        <text>👥</text>
+        <text>拼单小助手</text>
+      </view>
+      <text>></text>
+    </view>
+    <view class="order-group-info">
+      <text>您参与的【螺蛳粉+奶茶】拼单已满3人，快去下单</text>
+    </view>
+    <view class="group-btn">查看拼单详情</view>
+  </view>
+
+  <!-- 系统通知 -->
+  <view class="card">
+    <view class="card-title">
+      <text>🔔</text>
+      <text>系统通知</text>
+    </view>
+    <view class="message-item" wx:for="{{systemNotices}}" wx:key="id">
+      <text>📨</text>
+      <text>{{item.content}}</text>
+      <text class="notice-time">{{item.time}}</text>
+    </view>
+  </view>
+</view>
