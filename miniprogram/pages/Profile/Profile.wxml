@@ -77,14 +77,14 @@
       </view>
       <text>></text>
     </view>
-    <view class="menu-item">
+    <view class="menu-item" bindtap="goToCollection">
       <view class="menu-left">
         <text>❤️</text>
         <text>我的收藏</text>
       </view>
       <text>></text>
     </view>
-    <view class="menu-item">
+    <view class="menu-item" bindtap="goToHistory">
       <view class="menu-left">
         <text>🕐</text>
         <text>浏览记录</text>
@@ -97,15 +97,15 @@
   <view class="menu-card">
     <view class="card-title">我的订单</view>
     <view class="order-icons">
-      <view class="order-icon">
+      <view class="order-icon" bindtap="goToOrder" data-status="pending">
         <text>💰</text>
         <text>待付款</text>
       </view>
-      <view class="order-icon">
+      <view class="order-icon" bindtap="goToOrder" data-status="ongoing">
         <text>🚚</text>
         <text>进行中</text>
       </view>
-      <view class="order-icon">
+      <view class="order-icon" bindtap="goToOrder" data-status="completed">
         <text>✅</text>
         <text>已完成</text>
       </view>
@@ -114,21 +114,21 @@
 
   <!-- 设置 -->
   <view class="menu-card">
-    <view class="menu-item">
+    <view class="menu-item" bindtap="goToResetPW">
       <view class="menu-left">
-        <text>📞</text>
-        <text>手机号绑定</text>
+        <text>🔐</text>
+        <text>密码重置</text>
       </view>
       <text>></text>
     </view>
-    <view class="menu-item">
+    <view class="menu-item" bindtap="goToSetting">
       <view class="menu-left">
         <text>🔔</text>
         <text>通知偏好</text>
       </view>
       <text>></text>
     </view>
-    <view class="menu-item">
+    <view class="menu-item" bindtap="goToAboutUs">
       <view class="menu-left">
         <text>❓</text>
         <text>关于TanEats</text>

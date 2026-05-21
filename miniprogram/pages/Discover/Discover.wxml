@@ -1,7 +1,7 @@
 <!--pages/Discover/Discover.wxml-->
 <view class="container">
   <!-- 搜索栏 -->
-  <view class="search-bar">
+  <view class="search-bar" bindtap="goToSearch">
     <text>🔍</text>
     <text class="search-text">搜索评价、笔记...</text>
   </view>
@@ -15,7 +15,7 @@
     </view>
 
     <!-- 评价列表 -->
-    <view class="review-item" wx:for="{{reviews}}" wx:key="id">
+    <view class="review-item" wx:for="{{reviews}}" wx:key="id" bindtap="goToReview">
       <view class="review-header">
         <view class="reviewer-info">
           <text>👤</text>
@@ -40,7 +40,7 @@
   </view>
 
   <!-- 美食视频/直播回放 -->
-  <view class="card">
+  <view class="card" bindtap="goToVlog">
     <view class="card-title">
       <text>📹</text>
       <text>沉浸式逛吃Vlog</text>
@@ -56,7 +56,7 @@
   </view>
 
   <!-- 热门话题 -->
-  <view class="card">
+  <view class="card" bindtap="goToHotspot">
     <view class="flex-between">
       <view class="card-title">
         <text>🔥</text>

@@ -2,9 +2,10 @@
 Page({
   data: {
     hotStalls: [
-      { id: 1, name: '周姐炸串', isLive: true, queue: 3 },
-      { id: 2, name: '柳州螺蛳粉', isLive: false, queue: 7 },
-      { id: 3, name: '椰子冻小屋', isLive: false, queue: 0 }
+      { _id: 'ask2cbu4kwe01', name: '周姐炸串', isLive: true, queue: 3 },
+      { _id: 'adk3jcn3d3n4ec', name: '柳州螺蛳粉', isLive: false, queue: 7 },
+      { _id: 'ladcnk5jdcs78cdn', name: '椰子冻小屋', isLive: false, queue: 0 },
+      { _id: 'f24c8d6a6a0da4f10104929d33cb5416', name: '顾氏饮品铺', isLive: false, queue: 4}
     ]
   },
 
@@ -22,6 +23,19 @@ Page({
     wx.navigateTo({
       url: '/pages/Map/Map'
     });
+  },
+
+  goToSearch() {
+    wx.navigateTo({
+      url: '/pages/Search_Stall/Search_Stall'
+    });
+  },
+
+  goToStallDetail(event) {
+    const id = event.currentTarget.dataset.id
+    wx.navigateTo({
+      url: `/pages/StallDetail/StallDetail?id=${id}`,
+    })
   },
 
   goToOrderGroup() {

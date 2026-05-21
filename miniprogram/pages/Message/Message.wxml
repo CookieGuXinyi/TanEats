@@ -1,7 +1,7 @@
 <!--pages/Message/Message.wxml-->
 <view class="container">
   <!-- 优惠通知卡片 -->
-  <view class="card">
+  <view class="card" bindtap="goToDiscountMsg">
     <view class="flex-between">
       <view class="card-title">
         <text>🎫</text>
@@ -16,7 +16,7 @@
   </view>
 
   <!-- 摊主动态提醒 -->
-  <view class="card">
+  <view class="card" bindtap="goToVendorUpdates">
     <view class="card-title">
       <text>📊</text>
       <text>摊主动态</text>
@@ -43,7 +43,7 @@
   </view>
 
   <!-- 系统通知 -->
-  <view class="card">
+  <view class="card" bindtap="goToNotification">
     <view class="card-title">
       <text>🔔</text>
       <text>系统通知</text>

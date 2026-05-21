@@ -1,0 +1,174 @@
+<!--pages/Search/Search.wxml-->
+<view class="container">
+  <!-- 搜索头部 -->
+  <view class="search-hero">
+    <view class="hero-title">搜索六号门美食</view>
+    <view class="hero-desc">按口味、摊位、商品、优惠和排队情况快速筛选</view>
+    <view class="search-bar">
+      <text>🔍</text>
+      <input
+        class="search-input"
+        placeholder="搜索炸串、螺蛳粉、排队少、有优惠..."
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="confirmSearch"
+        confirm-type="search"
+        focus
+      />
+      <text class="clear-btn" wx:if="{{searchKeyword}}" bindtap="clearSearch">×</text>
+    </view>
+  </view>
+
+  <!-- 搜索概览 -->
+  <view class="summary-card">
+    <view class="summary-item">
+      <text class="summary-value">{{summary.count}}</text>
+      <text class="summary-label">匹配摊位</text>
+    </view>
+    <view class="summary-item">
+      <text class="summary-value">{{summary.avgWait}}min</text>
+      <text class="summary-label">平均等待</text>
+    </view>
+    <view class="summary-item">
+      <text class="summary-value">{{summary.couponCount}}</text>
+      <text class="summary-label">可用优惠</text>
+    </view>
+  </view>
+
+  <!-- 热门搜索 -->
+  <view class="card" wx:if="{{!searchKeyword}}">
+    <view class="flex-between">
+      <view class="card-title">
+        <text>🔥</text>
+        <text>热门搜索</text>
+      </view>
+      <text class="hint-text">同学都在找</text>
+    </view>
+    <view class="keyword-list">
+      <view
+        class="keyword-item"
+        wx:for="{{hotKeywords}}"
+        wx:key="*this"
+        data-keyword="{{item}}"
+        bindtap="searchHotKeyword"
+      >
+        {{item}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索历史 -->
+  <view class="card" wx:if="{{searchHistory.length > 0 && !searchKeyword}}">
+    <view class="flex-between">
+      <view class="card-title">
+        <text>🕐</text>
+        <text>搜索历史</text>
+      </view>
+      <text class="clear-history" bindtap="clearHistory">清空</text>
+    </view>
+    <view class="keyword-list">
+      <view
+        class="keyword-item history"
+        wx:for="{{searchHistory}}"
+        wx:key="*this"
+        data-keyword="{{item}}"
+        bindtap="searchHotKeyword"
+      >
+        {{item}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 筛选 -->
+  <scroll-view class="filter-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+    <view class="filter-list">
+      <view
+        class="filter-item {{activeFilter === item.key ? 'active' : ''}}"
+        wx:for="{{filters}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        bindtap="selectFilter"
+      >
+        <text>{{item.icon}}</text>
+        <text>{{item.label}}</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 排序 -->
+  <view class="sort-card">
+    <view
+      class="sort-item {{sortKey === item.key ? 'active' : ''}}"
+      wx:for="{{sortOptions}}"
+      wx:key="key"
+      data-key="{{item.key}}"
+      bindtap="selectSort"
+    >
+      {{item.label}}
+    </view>
+  </view>
+
+  <!-- AI 搜索助手 -->
+  <view class="ai-card" bindtap="askAi">
+    <view class="card-title">
+      <text>🤖</text>
+      <text>让吃货机器人帮你选</text>
+    </view>
+    <view class="ai-preview">
+      输入预算、口味或时间要求，AI 会结合排队人数、优惠券、销量和评价给出建议。
+    </view>
+  </view>
+
+  <!-- 搜索结果 -->
+  <view class="result-card">
+    <view class="flex-between">
+      <view class="card-title">
+        <text>📌</text>
+        <text>搜索结果</text>
+      </view>
+      <text class="hint-text">{{sortKey === 'recommend' ? '按推荐分排序' : '已切换排序'}}</text>
+    </view>
+
+    <view class="result-item" wx:for="{{results}}" wx:key="id">
+      <view class="result-header">
+        <view>
+          <view class="stall-name">{{item.name}}</view>
+          <view class="stall-meta">{{item.category}} · {{item.distance}} · {{item.queueLevel}}</view>
+        </view>
+        <view class="favorite-btn {{item.isFavorite ? 'active' : ''}}" data-id="{{item.id}}" bindtap="toggleFavorite">
+          {{item.isFavorite ? '❤️' : '♡'}}
+        </view>
+      </view>
+
+      <view class="score-row">
+        <text class="score-pill">推荐分 {{item.score}}</text>
+        <text>⭐ {{item.rating}}</text>
+        <text>👥 {{item.queue}}人</text>
+        <text>⏱ {{item.waitTime}}min</text>
+      </view>
+
+      <view class="reason-row">{{item.reason}}</view>
+      <view class="product-row">{{item.productText}}</view>
+
+      <view class="tag-list">
+        <text class="tag" wx:for="{{item.tags}}" wx:key="*this">{{item}}</text>
+      </view>
+
+      <view class="coupon-row" wx:if="{{item.hasCoupon}}">
+        <text>🎫</text>
+        <text>{{item.coupon}}</text>
+      </view>
+
+      <view class="action-row">
+        <view class="action-btn" data-id="{{item.id}}" bindtap="goToMap">看地图</view>
+        <view class="action-btn primary" data-id="{{item.id}}" bindtap="goToOrder">去点餐</view>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:if="{{results.length === 0}}">
+      <text class="empty-icon">🔍</text>
+      <text>没有找到匹配结果</text>
+      <text class="empty-desc">试试搜索“排队少”“有优惠”或具体商品名</text>
+    </view>
+  </view>
+</view>

@@ -21,10 +21,42 @@ Page({
     console.log('发现页加载');
   },
 
+  goToSearch() {
+    wx.showToast({
+      title: '评论帖搜索功能开发中',
+      icon: 'none',
+      duration: 2000
+    })
+  },
+
+  goToReview() {
+    wx.showToast({
+      title: '查看帖子功能开发中',
+      icon: 'none',
+      duration: 2000
+    })
+  },
+
   goToWriteReview() {
     wx.showToast({
-      title: '功能开发中',
+      title: '发帖功能开发中',
       icon: 'none'
     });
+  },
+
+  goToVlog() {
+    wx.showToast({
+      title: '视频帖功能开发中',
+      icon: 'none',
+      duration: 2000
+    })
+  },
+
+  goToHotspot() {
+    wx.showToast({
+      title: '热点功能开发中',
+      icon: 'none',
+      duration: 2000
+    })
   }
 });

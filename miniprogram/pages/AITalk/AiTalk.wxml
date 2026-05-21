@@ -12,15 +12,17 @@
   </view>
 
   <!-- 聊天记录区域 -->
-  <scroll-view class="chat-area" scroll-y scroll-into-view="{{scrollToView}}">
-    <view class="message-item" wx:for="{{messages}}" wx:key="id">
-      <view class="message-bubble {{item.isUser ? 'user-bubble' : 'ai-bubble'}}">
-        <text>{{item.content}}</text>
+  <view class="chat-area" scroll-into-view="{{scrollToView}}">
+    <block wx:for="{{messages}}" wx:key="id">
+      <view id="msg-{{item.id}}" class="message-item {{item.isUser ? 'user-message' : 'ai-message'}}">
+        <view class="message-bubble {{item.isUser ? 'user-bubble' : 'ai-bubble'}}">
+          <text>{{item.content}}</text>
+        </view>
+        <text class="message-time" >{{item.time}}</text>
       </view>
-      <text class="message-time">{{item.time}}</text>
-    </view>
+    </block>
     <view id="bottom"></view>
-  </scroll-view>
+  </view>
 
   <!-- 快捷问题 -->
   <view class="quick-questions">
@@ -33,7 +35,7 @@
   <view class="input-area">
     <input class="input" placeholder="问点什么..." bindinput="onInput" value="{{inputValue}}" confirm-type="send" bindconfirm="sendMessage"/>
     <view class="send-btn {{inputValue ? 'active' : ''}}" bindtap="sendMessage">
-      <text>📤</text>
+      <text class="send-img">📤</text>
     </view>
   </view>
 </view>

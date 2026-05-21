@@ -9,7 +9,9 @@
     "pages/Register_Vendor/Register_Vendor",
     "pages/Register_User/Register_User",
     "pages/MyApplications/MyApplications",
-    "pages/Map/Map"
+    "pages/Map/Map",
+    "pages/Search_Stall/Search_Stall",
+    "pages/StallDetail/StallDetail"
   ],
   "window": {
     "navigationBarBackgroundColor": "#ffffff",

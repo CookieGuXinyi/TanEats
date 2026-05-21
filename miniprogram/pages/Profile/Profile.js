@@ -89,6 +89,56 @@ Page({
     })
   },
 
+  goToCollection() {
+    wx.showToast({
+      title: '收藏功能开发中',
+      icon: 'none',
+      duration: 2000
+    })
+  },
+
+  goToHistory() {
+    wx.showToast({
+      title: '浏览记录功能开发中',
+      icon: 'none',
+      duration: 2000
+    })
+  },
+
+  goToOrder(event) {
+    const status = event.currentTarget.dataset.status;
+
+ wx.showToast({
+      title: `订单功能开发中(${status})`,
+      icon: 'none',
+      duration: 2000
+    })   
+  },
+
+  goToResetPW() {
+    wx.showToast({
+      title: '密码重置功能开发中',
+      icon: 'none',
+      duration: 2000
+    })
+  },
+  
+  goToSetting() {
+    wx.showToast({
+      title: '通知偏好设置开发中',
+      icon: 'none',
+      duration: 2000
+    })
+  },
+
+  goToAboutUs() {
+    wx.showToast({
+      title: '内容修订中',
+      icon: 'none',
+      duration: 2000
+    })
+  },
+
   // 退出登录
   logout() {
     wx.showModal({

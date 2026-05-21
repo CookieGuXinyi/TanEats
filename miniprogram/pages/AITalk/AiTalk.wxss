@@ -2,7 +2,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
   background-color: #f8f8f8;
 }
 
@@ -13,6 +13,12 @@
   align-items: center;
   gap: 12px;
   border-bottom: 0.5px solid #f0f0f0;
+  position: fixed;    /* 开启固定定位 */
+  top: 0;             /* 紧贴页面最顶部 */
+  left: 0;            /* 紧贴左侧 */
+  width: 100%;        /* 宽度占满整个屏幕 */
+  z-index: 100;       /* 设置较高的层级，防止被下方的聊天内容遮挡 */
+  box-sizing: border-box; /* 确保 padding 不会撑大 100% 的宽度导致出现横向滚动条 */
 }
 
 .ai-avatar {
@@ -39,14 +45,26 @@
 
 .chat-area {
   flex: 1;
-  padding: 16px;
-  padding-bottom: 20px;
+  padding-top: 80px; 
+  padding-bottom: calc(120px + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .message-item {
-  margin-bottom: 16px;
   display: flex;
-  flex-direction: column;
+  width: 100%;
+  padding: 10px 16px; /* 左右留点空隙 */
+  box-sizing: border-box;
+  align-items: flex-end; /* 底部对齐，防止时间戳把气泡顶歪 */
+}
+
+.ai-message {
+  flex-direction: row;
+}
+
+.user-message {
+  flex-direction: row-reverse; 
 }
 
 .message-bubble {
@@ -75,7 +93,7 @@
   font-size: 10px;
   color: #aaa;
   margin-top: 4px;
-  margin-left: 12px;
+  white-space: nowrap; /* 防止时间换行 */
 }
 
 .quick-questions {
@@ -86,23 +104,38 @@
   gap: 10px;
   border-top: 0.5px solid #f0f0f0;
   border-bottom: 0.5px solid #f0f0f0;
+  position: fixed;    /* 改为固定定位 */
+  bottom: 70px;       /* 距离底部的距离 = input-area 的高度 */
+  left: 0;
+  width: 100%;        /* 宽度占满 */
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  z-index: 99;        /* 层级比输入框低一点，但比普通内容高 */
+  box-sizing: border-box; /* 确保 padding 不会撑破 100% 的宽度 */
 }
 
 .quick-item {
   background: #f5f5f5;
-  padding: 8px 14px;
-  border-radius: 30px;
-  font-size: 13px;
+  padding: 4px 6px;
+  border-radius: 10px;
+  font-size: 12px;
   color: #ff7a1c;
 }
 
 .input-area {
+  position: fixed;    /* 核心：开启固定定位 */
+  bottom: 0;          /* 紧贴页面底部 */
+  left: 0;            /* 紧贴左侧 */
+  width: 100%;        /* 宽度占满屏幕 */
   background: white;
   padding: 12px 16px;
+  /* 适配 iPhone X 等全面屏机型的底部安全距离 */
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
   display: flex;
   gap: 12px;
   align-items: center;
   border-top: 0.5px solid #f0f0f0;
+  z-index: 100;       /* 保证输入区在最上层，不被遮挡 */
+  box-sizing: border-box; /* 确保 padding 不会撑大 100% 的宽度导致横向滚动 */
 }
 
 .input {
@@ -123,6 +156,10 @@
   justify-content: center;
   color: white;
   transition: all 0.2s;
+}
+
+.send-img {
+ font-size: 20px;
 }
 
 .send-btn.active {

@@ -21,10 +21,34 @@ Page({
     console.log('消息页加载');
   },
 
+  goToDiscountMsg() {
+    wx.showToast({
+      title: '优惠功能开发中',
+      icon: 'none',
+      duration: 2000
+    })
+  },
+
+ goToVendorUpdates() {
+    wx.showToast({
+      title: '摊主动态功能开发中',
+      icon: 'none',
+      duration: 2000
+    })
+  },
+
   goToOrderGroup() {
     wx.showToast({
       title: '拼单功能开发中',
       icon: 'none'
     });
+  },
+
+  goToNotification() {
+    wx.showToast({
+      title: '系统通知功能开发中',
+      icon: 'none',
+      duration: 2000
+    })
   }
 });

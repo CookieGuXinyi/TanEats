@@ -1,7 +1,7 @@
 <!--pages/index/index.wxml-->
 <view class="container">
   <!-- 搜索栏 -->
-  <view class="search-bar">
+  <view class="search-bar" bindtap="goToSearch">
     <text>🔍</text>
     <text class="search-text">搜索美食、店铺...</text>
   </view>
@@ -42,7 +42,7 @@
       <text>🔥</text>
       <text>热门推荐</text>
     </view>
-    <view class="stall-item" wx:for="{{hotStalls}}" wx:key="id">
+    <view class="stall-item" wx:for="{{hotStalls}}" wx:key="_id" bindtap="goToStallDetail" data-id="{{item._id}}">
       <view class="stall-info">
         <text class="stall-name">{{item.name}}</text>
         <text class="live-tag" wx:if="{{item.isLive}}">直播中</text>
