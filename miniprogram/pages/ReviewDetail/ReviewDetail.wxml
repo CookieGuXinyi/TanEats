@@ -1,0 +1,52 @@
+<!--pages/ReviewDetail/ReviewDetail.wxml-->
+<view class="container" wx:if="{{review && !notFound}}">
+  
+  <!-- 用户信息 -->
+  <view class="user-info">
+    <view class="avatar">
+      <text>👤</text>
+    </view>
+    <view class="user-detail">
+      <text class="user-name">{{review.reviewerName}}</text>
+      <text class="review-time">{{review.createTimeFormatted}}</text>
+    </view>
+  </view>
+
+  <!-- 店铺和评分 -->
+  <view class="shop-info">
+    <text class="shop-name">📍 {{review.shopName}}</text>
+    <view class="rating">
+      <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this" class="star {{review.rating >= item ? 'active' : ''}}">⭐</text>
+    </view>
+  </view>
+
+  <!-- 内容 -->
+  <view class="content">
+    <text>{{review.content}}</text>
+  </view>
+
+  <!-- 图片列表 -->
+  <view class="image-list" wx:if="{{review.images && review.images.length > 0}}">
+    <image wx:for="{{review.images}}" wx:key="index" src="{{item}}" mode="aspectFill" bindtap="previewImage" data-url="{{item}}"></image>
+  </view>
+
+  <!-- 互动栏 -->
+  <view class="action-bar">
+    <view class="action-item" bindtap="toggleLike">
+      <text>{{review.isLiked ? '❤️' : '🤍'}}</text>
+      <text>{{review.likeCount || 0}}</text>
+    </view>
+    <view class="action-item" bindtap="goToShop">
+      <text>🏪</text>
+      <text>去这家店</text>
+    </view>
+  </view>
+
+</view>
+
+<!-- 未找到提示 -->
+<view class="not-found" wx:else>
+  <text class="not-found-icon">🔍</text>
+  <text class="not-found-text">找不到当前评论</text>
+  <text class="not-found-desc">该评论可能已被删除或不存在</text>
+</view>

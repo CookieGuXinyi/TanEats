@@ -1,4 +1,16 @@
 <!--pages/Discover/Discover.wxml-->
+<wxs module="review">
+  var getStars = function(rating) {
+    var fullStar = Math.floor(rating);
+    var starStr = '';
+    for (var i = 0; i < fullStar; i++) {
+      starStr += '⭐';
+    }
+    return starStr;
+  }
+  module.exports.getStars = getStars;
+</wxs>
+
 <view class="container">
   <!-- 搜索栏 -->
   <view class="search-bar" bindtap="goToSearch">
@@ -15,14 +27,14 @@
     </view>
 
     <!-- 评价列表 -->
-    <view class="review-item" wx:for="{{reviews}}" wx:key="id" bindtap="goToReview">
+    <view class="review-item" wx:for="{{reviews}}" wx:key="_id" bindtap="goToReview" data-_id="{{item._id}}">
       <view class="review-header">
         <view class="reviewer-info">
           <text>👤</text>
           <text class="reviewer-name">{{item.reviewer}}</text>
         </view>
         <view class="rating">
-          <text>⭐</text>
+          <text>{{review.getStars(item.rating)}}</text>
           <text>{{item.rating}}</text>
         </view>
       </view>
@@ -46,7 +58,7 @@
       <text>沉浸式逛吃Vlog</text>
     </view>
     <view class="video-grid">
-      <view class="video-item" wx:for="{{videos}}" wx:key="id">
+      <view class="video-item" wx:for="{{videos}}" wx:key="_id">
         <view class="video-thumb">
           <text>▶️</text>
         </view>
@@ -65,7 +77,7 @@
       <text class="more-text">更多 ></text>
     </view>
     <view class="topic-list">
-      <view class="topic-item" wx:for="{{topics}}" wx:key="id">
+      <view class="topic-item" wx:for="{{topics}}" wx:key="_id">
         <text>#</text>
         <text>{{item.name}}</text>
         <text class="topic-count">{{item.count}}人参与</text>

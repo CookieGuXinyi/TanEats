@@ -11,7 +11,9 @@
     "pages/MyApplications/MyApplications",
     "pages/Map/Map",
     "pages/Search_Stall/Search_Stall",
-    "pages/StallDetail/StallDetail"
+    "pages/StallDetail/StallDetail",
+    "pages/WriteReview/WriteReview",
+    "pages/ReviewDetail/ReviewDetail"
   ],
   "window": {
     "navigationBarBackgroundColor": "#ffffff",
