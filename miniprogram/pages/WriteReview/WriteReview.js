@@ -1,48 +1,93 @@
 // pages/WriteReview/WriteReview.js
 Page({
   data: {
-    shopList: [],
-    shopIndex: -1,
-    selectedShop: null,
+    allShops: [],           // 所有店铺列表
+    selectedShops: [],      // 已选店铺
+    tags: [],               // 话题标签数组
+    tagInput: '',           // 当前输入的标签
     rating: 0,
     content: '',
     images: [],
+    showShopPicker: false,
     canSubmit: false
   },
 
   onLoad() {
-    this.loadShops()
+    this.loadAllShops()
   },
 
-  // 加载店铺列表
-  async loadShops() {
-    wx.showLoading({ title: '加载中...' })
+  // 加载所有店铺
+  async loadAllShops() {
     try {
       const db = wx.cloud.database()
       const res = await db.collection('stalls').where({
         status: 'active'
       }).get()
-      
-      this.setData({ shopList: res.data })
-      wx.hideLoading()
+      this.setData({ allShops: res.data })
     } catch (err) {
-      wx.hideLoading()
-      console.error('加载失败', err)
+      console.error('加载店铺失败', err)
     }
   },
 
-  onShopChange(e) {
-    const index = e.detail.value
-    this.setData({
-      shopIndex: index,
-      selectedShop: this.data.shopList[index]
+  // 显示店铺选择器
+  showShopPicker() {
+    const that = this
+    const selectedIds = that.data.selectedShops.map(s => s._id)
+    const availableShops = that.data.allShops.filter(s => !selectedIds.includes(s._id))
+    
+    if (availableShops.length === 0) {
+      wx.showToast({ title: '没有更多店铺可选', icon: 'none' })
+      return
+    }
+    
+    const items = availableShops.map(s => s.shopName)
+    
+    wx.showActionSheet({
+      itemList: items,
+      success(res) {
+        const selectedShop = availableShops[res.tapIndex]
+        that.setData({
+          selectedShops: [...that.data.selectedShops, selectedShop]
+        })
+        that.checkCanSubmit()
+      }
     })
+  },
+
+  // 移除已选店铺
+  removeShop(e) {
+    const index = e.currentTarget.dataset.index
+    const selectedShops = [...this.data.selectedShops]
+    selectedShops.splice(index, 1)
+    this.setData({ selectedShops })
     this.checkCanSubmit()
   },
 
+  // 添加标签
+  addTag(e) {
+    const tag = e.detail.value.trim()
+    if (tag && !this.data.tags.includes(tag)) {
+      this.setData({
+        tags: [...this.data.tags, tag],
+        tagInput: ''
+      })
+    }
+  },
+
+  onTagInput(e) {
+    this.setData({ tagInput: e.detail.value })
+  },
+
+  // 移除标签
+  removeTag(e) {
+    const index = e.currentTarget.dataset.index
+    const tags = [...this.data.tags]
+    tags.splice(index, 1)
+    this.setData({ tags })
+  },
+
   setRating(e) {
-    const rating = e.currentTarget.dataset.rating
-    this.setData({ rating })
+    this.setData({ rating: e.currentTarget.dataset.rating })
     this.checkCanSubmit()
   },
 
@@ -52,8 +97,8 @@ Page({
   },
 
   checkCanSubmit() {
-    const { selectedShop, rating, content } = this.data
-    const canSubmit = selectedShop && rating > 0 && content.trim().length > 0
+    const { selectedShops, rating, content } = this.data
+    const canSubmit = selectedShops.length > 0 && rating > 0 && content.trim().length > 0
     this.setData({ canSubmit })
   },
 
@@ -98,6 +143,7 @@ Page({
     this.setData({ images })
   },
 
+  // 提交评论
   async submitReview() {
     if (!this.data.canSubmit) return
     
@@ -107,19 +153,23 @@ Page({
     
     try {
       const db = wx.cloud.database()
-      await db.collection('reviews').add({
-        data: {
-          shopId: this.data.selectedShop._id,
-          shopName: this.data.selectedShop.shopName,
-          reviewerId: userInfo._id,
-          reviewerName: userInfo.nickname || '匿名用户',
-          rating: this.data.rating,
-          content: this.data.content,
-          images: this.data.images,
-          likeCount: 0,
-          createTime: new Date()
-        }
-      })
+      
+      // 构建数据
+      const reviewData = {
+        shopIds: this.data.selectedShops.map(s => s._id),
+        shopNames: this.data.selectedShops.map(s => s.shopName),
+        tags: this.data.tags,
+        rating: this.data.rating,
+        content: this.data.content,
+        images: this.data.images,
+        reviewerId: userInfo._id,
+        reviewerName: userInfo.nickname || '匿名用户',
+        likeCount: 0,
+        createTime: new Date(),
+        isMultiShop: this.data.selectedShops.length > 1
+      }
+      
+      await db.collection('reviews').add({ data: reviewData })
       
       wx.hideLoading()
       wx.showToast({ title: '发布成功', icon: 'success' })

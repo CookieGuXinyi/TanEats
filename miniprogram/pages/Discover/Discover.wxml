@@ -39,8 +39,14 @@
         </view>
       </view>
       <view class="review-content">{{item.content}}</view>
+      <view class="topic-tags" wx:if="{{item.tags && item.tags.length > 0}}">
+        <text class="topic-tag" wx:for="{{item.tags}}" wx:key="index"># {{item}}</text>
+      </view>
       <view class="review-footer">
-        <text class="stall-link">📍 {{item.stallName}}</text>
+        <!-- <text class="stall-link">📍 {{item.stallName}}</text> -->
+        <view class="shop-tags">
+          <text class="shop-tag" wx:for="{{item.shopNames}}" wx:key="index">📍 {{item}}</text>
+        </view>
         <text class="review-time">{{item.time}}</text>
       </view>
     </view>

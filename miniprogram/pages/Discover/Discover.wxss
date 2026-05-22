@@ -80,12 +80,51 @@
 .review-footer {
   display: flex;
   justify-content: space-between;
+  align-items: flex-end;
   font-size: 12px;
   color: #999;
 }
 
+.review-time {
+  font-size: 11px;
+  color: #999;
+  flex-shrink: 0;
+}
+
 .stall-link {
   color: #ff7a1c;
+}
+
+/* 店铺标签 */
+.shop-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.shop-tag {
+  background: #fff1e6;
+  color: #ff7a1c;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+}
+
+/* 话题标签 */
+.topic-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.topic-tag {
+  background: #e8f5e9;
+  color: #4caf50;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 11px;
 }
 
 .write-btn {

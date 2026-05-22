@@ -27,9 +27,11 @@ Page({
   loadReviews() {
     wx.cloud.database().collection('reviews')
       .orderBy('createTime', 'desc')
-      .limit(5)
+      .limit(3)
       .get()
       .then(res =>{
+        console.log('原始数据:', JSON.stringify(res.data))  // 查看完整数据
+
         const reviews = res.data.map(item => ({
           ...item,
           reviewer: item.reviewerName,      // 真实字段 reviewerName → reviewer
@@ -55,10 +57,8 @@ Page({
   },
 
   goToSearch() {
-    wx.showToast({
-      title: '评论帖搜索功能开发中',
-      icon: 'none',
-      duration: 2000
+    wx.navigateTo({
+      url: '/pages/SearchReview/SearchReview',
     })
   },
 

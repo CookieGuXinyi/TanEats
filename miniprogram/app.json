@@ -13,7 +13,8 @@
     "pages/Search_Stall/Search_Stall",
     "pages/StallDetail/StallDetail",
     "pages/WriteReview/WriteReview",
-    "pages/ReviewDetail/ReviewDetail"
+    "pages/ReviewDetail/ReviewDetail",
+    "pages/SearchReview/SearchReview"
   ],
   "window": {
     "navigationBarBackgroundColor": "#ffffff",

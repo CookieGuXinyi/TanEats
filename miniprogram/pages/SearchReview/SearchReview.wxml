@@ -1,0 +1,173 @@
+<!--pages/SearchReview/SearchReview.wxml-->
+<view class="container">
+  
+  <!-- 搜索头部 -->
+  <view class="search-header">
+    <view class="search-bar">
+      <text>🔍</text>
+      <input 
+        class="search-input" 
+        placeholder="搜索评价、店铺、话题..." 
+        value="{{searchText}}"
+        bindinput="onSearchInput"
+        bindconfirm="doSearch"
+        focus="{{autoFocus}}"
+      />
+      <text class="clear-btn" wx:if="{{searchText}}" bindtap="clearSearch">×</text>
+    </view>
+    <view class="cancel-btn" bindtap="goBack">取消</view>
+  </view>
+
+  <!-- 搜索历史 -->
+  <view class="history-section" wx:if="{{!hasSearched && searchHistory.length > 0}}">
+    <view class="section-header">
+      <text class="section-title">历史搜索</text>
+      <text class="clear-history" bindtap="clearHistory">清空</text>
+    </view>
+    <view class="history-tags">
+      <text class="history-tag" wx:for="{{searchHistory}}" wx:key="index" bindtap="searchHistory" data-keyword="{{item}}">{{item}}</text>
+    </view>
+  </view>
+
+  <!-- 热门搜索 -->
+  <view class="hot-section" wx:if="{{!hasSearched}}">
+    <view class="section-header">
+      <text class="section-title">🔥 热门搜索</text>
+    </view>
+    <view class="hot-tags">
+      <text class="hot-tag" wx:for="{{hotSearches}}" wx:key="index" bindtap="searchHot" data-keyword="{{item}}">{{item}}</text>
+    </view>
+  </view>
+
+  <!-- 评论列表（无搜索时显示默认，有搜索时显示搜索结果） -->
+  <view class="result-list" wx:if="{{!hasSearched && displayList.length > 0}}">
+    <view 
+      class="review-item" 
+      wx:for="{{displayList}}" 
+      wx:key="_id" 
+      bindtap="goToReview" 
+      data-id="{{item._id}}">
+      
+      <!-- 原有评论项内容 -->
+      <view class="review-header">
+        <view class="reviewer-info">
+          <text>👤</text>
+          <text class="reviewer-name">{{item.reviewerName}}</text>
+        </view>
+        <view class="rating">
+          <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this" wx:for-item="star">
+            {{item.rating >= star ? '⭐' : ''}}
+          </text>
+        </view>
+      </view>
+      
+      <!-- 店铺标签 + 话题标签 -->
+      <view class="tags-wrapper" wx:if="{{(item.shopNames && item.shopNames.length > 0) || (item.tags && item.tags.length > 0)}}">
+        <text class="shop-tag" wx:for="{{item.shopNames}}" wx:key="index">📍 {{item}}</text>
+        <text class="topic-tag" wx:for="{{item.tags}}" wx:key="index"># {{item}}</text>
+      </view>
+      
+      <!-- 内容 -->
+      <view class="review-content">
+        <rich-text wx:if="{{hasSearched && item.highlightedContent}}" nodes="{{item.highlightedContent}}"></rich-text>
+        <text wx:else>{{item.content}}</text>
+      </view>
+      
+      <view class="review-footer">
+        <view class="like-info">
+          <text>❤️ {{item.likeCount || 0}}</text>
+        </view>
+        <text class="review-time">{{item.time}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 筛选栏（搜索后显示） -->
+  <view class="filter-bar" wx:if="{{hasSearched}}">
+    <view 
+      class="filter-item {{filterType === 'all' ? 'active' : ''}}" 
+      bindtap="setFilter" 
+      data-type="all">
+      <text>综合</text>
+    </view>
+    <view 
+      class="filter-item {{filterType === 'latest' ? 'active' : ''}}" 
+      bindtap="setFilter" 
+      data-type="latest">
+      <text>最新</text>
+    </view>
+    <view 
+      class="filter-item {{filterType === 'rating' ? 'active' : ''}}" 
+      bindtap="setFilter" 
+      data-type="rating">
+      <text>评分最高</text>
+    </view>
+    <view 
+      class="filter-item {{filterType === 'like' ? 'active' : ''}}" 
+      bindtap="setFilter" 
+      data-type="like">
+      <text>最多点赞</text>
+    </view>
+  </view>
+
+  <!-- 搜索结果统计 -->
+  <view class="result-stats" wx:if="{{hasSearched && searchResults.length > 0}}">
+    <text>共找到 {{searchResults.length}} 条相关评论</text>
+  </view>
+
+  <!-- 搜索结果列表 -->
+  <view class="result-list" wx:if="{{hasSearched && searchResults.length > 0}}">
+    <view 
+      class="review-item" 
+      wx:for="{{searchResults}}" 
+      wx:key="_id" 
+      bindtap="goToReview" 
+      data-id="{{item._id}}">
+      
+      <view class="review-header">
+        <view class="reviewer-info">
+          <text>👤</text>
+          <text class="reviewer-name">{{item.reviewerName}}</text>
+        </view>
+        <view class="rating">
+          <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this">
+            {{item.rating >= item ? '' : '⭐'}}
+          </text>
+        </view>
+      </view>
+
+      <!-- 店铺标签 + 话题标签（合并显示） -->
+      <view class="tags-wrapper" wx:if="{{(item.shopNames && item.shopNames.length > 0) || (item.tags && item.tags.length > 0)}}">
+        <!-- 店铺标签 -->
+        <text class="shop-tag" wx:for="{{item.shopNames}}" wx:key="index">📍 {{item}}</text>
+        <!-- 话题标签 -->
+        <text class="topic-tag" wx:for="{{item.tags}}" wx:key="index"># {{item}}</text>
+      </view>
+      
+      <!-- 搜索词的内容 -->
+      <view class="review-content">
+        <text>{{item.content}}</text>
+      </view>
+      
+      <view class="review-footer">
+        <view class="like-info">
+          <text>❤️ {{item.likeCount || 0}}</text>
+        </view>
+        <text class="review-time">{{item.time}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 暂无结果 -->
+  <view class="empty-state" wx:if="{{hasSearched && searchResults.length === 0}}">
+    <text class="empty-icon">🔍</text>
+    <text class="empty-text">没有找到相关评论</text>
+    <text class="empty-desc">试试其他关键词吧~</text>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="loading-more" wx:if="{{hasMore && searchResults.length > 0}}">
+    <text>加载更多...</text>
+  </view>
+
+</view>

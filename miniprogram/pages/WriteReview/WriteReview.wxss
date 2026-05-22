@@ -31,6 +31,81 @@
   color: #333;
 }
 
+/* 已选店铺样式 */
+.selected-shops {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.selected-shop {
+  background: #ff7a1c;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.selected-shop .remove {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.add-shop-btn {
+  background: #f5f5f5;
+  padding: 10px;
+  text-align: center;
+  border-radius: 12px;
+  color: #ff7a1c;
+  font-size: 14px;
+}
+
+/* 标签区域 */
+.tags-input-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.tag-item {
+  background: #ff7a1c;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.remove-tag {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.tag-input {
+  flex: 1;
+  min-width: 100px;
+  background: transparent;
+  padding: 6px 0;
+  font-size: 13px;
+}
+
+.form-hint {
+  font-size: 11px;
+  color: #999;
+  margin-top: 6px;
+  display: block;
+}
+
 .rating-input {
   display: flex;
   gap: 8px;

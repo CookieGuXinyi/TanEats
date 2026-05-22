@@ -58,10 +58,12 @@ Page({
     wx.showToast({ title: '功能开发中', icon: 'none' })
   },
 
-  goToShop() {
-    const { review } = this.data
+  goToShop(event) {
+    const index = event.currentTarget.dataset.index;
+    const shopId = this.data.review.shopIds[index];
+
     wx.navigateTo({
-      url: `/pages/StallDetail/StallDetail?id=${review.shopId}`
+      url: `/pages/StallDetail/StallDetail?id=${shopId}`
     })
   }
 })

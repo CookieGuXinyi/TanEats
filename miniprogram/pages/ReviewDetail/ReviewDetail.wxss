@@ -66,6 +66,76 @@
   opacity: 1;
 }
 
+/* 新增：关联店铺标签区域（如果有多个店铺） */
+.shop-tags-section {
+  background: white;
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.shop-tags-title {
+  font-size: 14px;
+  color: #333;
+  line-height: 1;
+}
+
+.section-header .rating {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  line-height: 1; 
+}
+
+.shop-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.shop-tag {
+  background: #fff1e6;
+  color: #ff7a1c;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+/* 话题标签区域 */
+.topic-tags-section {
+  background: white;
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.topic-tags-title {
+  font-size: 13px;
+  color: #999;
+  margin-bottom: 8px;
+}
+
+.topic-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.topic-tag {
+  background: #e8f5e9;
+  color: #4caf50;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
 .content {
   background: white;
   border-radius: 20px;

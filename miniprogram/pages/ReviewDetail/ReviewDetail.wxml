@@ -12,11 +12,36 @@
     </view>
   </view>
 
+  <!-- 关联店铺（多店时显示标签区域） -->
+  <view class="shop-tags-section" wx:if="{{review.shopNames && review.shopNames.length > 0}}">
+    <view class="section-header">
+      <text class="shop-tags-title">📌 关联店铺（点击进入）</text>
+      <view class="rating">
+        <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this">
+          {{review.rating >= item ? '⭐' : ''}}
+        </text>
+      </view>
+    </view>
+    <view class="shop-tags">
+      <text class="shop-tag" wx:for="{{review.shopNames}}" wx:key="index" data-index="{{index}}" bindtap="goToShop">📍 {{item}}</text>
+    </view>
+  </view>
+
   <!-- 店铺和评分 -->
-  <view class="shop-info">
-    <text class="shop-name">📍 {{review.shopName}}</text>
+  <!-- <view class="shop-info" wx:else>
+    <text class="shop-name">📍 {{review.shopNames[0]}}</text>
     <view class="rating">
-      <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this" class="star {{review.rating >= item ? 'active' : ''}}">⭐</text>
+      <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this">
+        {{review.rating >= item ? '⭐' : '☆'}}
+      </text>
+    </view>
+  </view> -->
+
+  <!-- 话题标签 -->
+  <view class="topic-tags-section" wx:if="{{review.tags && review.tags.length > 0}}">
+    <view class="topic-tags-title">🏷️ 话题标签</view>
+    <view class="topic-tags">
+      <text class="topic-tag" wx:for="{{review.tags}}" wx:key="index">#{{item}}</text>
     </view>
   </view>
 
@@ -35,10 +60,6 @@
     <view class="action-item" bindtap="toggleLike">
       <text>{{review.isLiked ? '❤️' : '🤍'}}</text>
       <text>{{review.likeCount || 0}}</text>
-    </view>
-    <view class="action-item" bindtap="goToShop">
-      <text>🏪</text>
-      <text>去这家店</text>
     </view>
   </view>
 

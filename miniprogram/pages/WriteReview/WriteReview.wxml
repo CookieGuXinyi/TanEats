@@ -1,7 +1,7 @@
 <!--pages/WriteReview/WriteReview.wxml-->
 <view class="container">
   <!-- 选择店铺 -->
-  <view class="form-item">
+  <!-- <view class="form-item">
     <text class="form-label">店铺 <text class="required">*</text></text>
     <picker bindchange="onShopChange" range="{{shopList}}" range-key="shopName" value="{{shopIndex}}">
       <view class="picker-view">
@@ -9,6 +9,38 @@
         <text>▼</text>
       </view>
     </picker>
+  </view> -->
+
+  <!-- 选择店铺（支持多选） -->
+  <view class="form-item">
+    <text class="form-label">关联店铺 <text class="required">*</text></text>
+    <text class="form-hint">可选择多个店铺</text>
+    
+    <!-- 已选店铺列表 -->
+    <view class="selected-shops" wx:if="{{selectedShops.length > 0}}">
+      <view class="selected-shop" wx:for="{{selectedShops}}" wx:key="id">
+        <text>{{item.shopName}}</text>
+        <text class="remove" bindtap="removeShop" data-index="{{index}}">✕</text>
+      </view>
+    </view>
+    
+    <!-- 添加店铺按钮 -->
+    <view class="add-shop-btn" bindtap="showShopPicker">
+      <text>+ 添加店铺</text>
+    </view>
+  </view>
+
+  <!-- 话题标签 -->
+  <view class="form-item">
+    <text class="form-label">话题标签</text>
+    <view class="tags-input-area">
+      <view class="tag-item" wx:for="{{tags}}" wx:key="index">
+        <text>#{{item}}</text>
+        <text class="remove-tag" bindtap="removeTag" data-index="{{index}}">✕</text>
+      </view>
+      <input class="tag-input" placeholder="输入标签后按回车" bindconfirm="addTag" value="{{tagInput}}" bindinput="onTagInput"/>
+    </view>
+    <text class="form-hint">例：夜宵、宝藏小店、实惠、排队王</text>
   </view>
 
   <!-- 评分 -->
