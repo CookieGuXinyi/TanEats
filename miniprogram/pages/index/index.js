@@ -2,7 +2,7 @@
 Page({
   data: {
     hotStalls: [
-      { _id: 'ask2cbu4kwe01', name: '周姐炸串', isLive: true, queue: 3 },
+      { _id: '21dd03466a11a95a0051231173d42119', name: '周姐炸串', isLive: true, queue: 3 },
       { _id: 'adk3jcn3d3n4ec', name: '柳州螺蛳粉', isLive: false, queue: 7 },
       { _id: 'ladcnk5jdcs78cdn', name: '椰子冻小屋', isLive: false, queue: 0 },
       { _id: 'f24c8d6a6a0da4f10104929d33cb5416', name: '顾氏饮品铺', isLive: false, queue: 4}

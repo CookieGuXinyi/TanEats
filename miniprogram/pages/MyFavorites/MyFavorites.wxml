@@ -1,0 +1,49 @@
+<!--pages/MyFavorites/MyFavorites.wxml-->
+<view class="container">
+  
+  <!-- 统计卡片 -->
+  <view class="stats-card" wx:if="{{favorites.length > 0}}">
+    <text class="stats-value">{{favorites.length}}</text>
+    <text class="stats-label">个收藏摊位</text>
+  </view>
+
+  <!-- 有数据时显示收藏列表 -->
+  <view class="favorites-list" wx:if="{{favorites.length > 0 && !loading}}">
+    <block wx:for="{{favorites}}" wx:key="id">
+      <view class="favorite-item" bindtap="goToStallDetail" data-id="{{item.id}}">
+        <!-- 左侧信息 -->
+        <view class="item-left">
+          <view class="stall-icon">🏪</view>
+          <view class="stall-info">
+            <view class="stall-name">{{item.name}}</view>
+            <view class="stall-meta">
+              <text class="category">{{item.category}}</text>
+              <text class="rating">⭐ {{item.rating}}</text>
+            </view>
+            <view class="stall-address">📍 {{item.address}}</view>
+          </view>
+        </view>
+        <!-- 右侧操作 -->
+        <view class="item-right">
+          <view class="unfavorite-btn" catchtap="unfavorite" data-id="{{item.id}}">
+            ❤️ 已收藏
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 空状态（无数据时显示） -->
+  <view class="empty-state" wx:elif="{{favorites.length === 0 && !loading}}">
+    <text class="empty-icon">❤️</text>
+    <text class="empty-text">暂无收藏摊位</text>
+    <text class="empty-desc">去逛逛发现页，收藏喜欢的摊位吧~</text>
+    <view class="go-search-btn" bindtap="goToSearch">去逛逛</view>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+
+</view>

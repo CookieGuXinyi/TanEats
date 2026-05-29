@@ -14,7 +14,9 @@
     "pages/StallDetail/StallDetail",
     "pages/WriteReview/WriteReview",
     "pages/ReviewDetail/ReviewDetail",
-    "pages/SearchReview/SearchReview"
+    "pages/SearchReview/SearchReview",
+    "pages/AdminReview/AdminReview",
+    "pages/MyFavorites/MyFavorites"
   ],
   "window": {
     "navigationBarBackgroundColor": "#ffffff",
@@ -45,6 +47,10 @@
       {
         "pagePath": "pages/Profile/Profile",
         "text": "我的"
+      },
+      {
+        "pagePath": "pages/AdminReview/AdminReview",
+        "text": "审核"
       }
     ]
   },

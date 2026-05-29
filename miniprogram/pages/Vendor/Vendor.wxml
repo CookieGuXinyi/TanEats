@@ -55,6 +55,39 @@
     <text>暂无商品，点击上方按钮添加</text>
   </view>
 
+  <!-- 顾客评价 -->
+  <view class="section-title">
+    <text>💬 顾客评价</text>
+  </view>
+
+  <!-- 评价列表 -->
+  <view class="review-list" wx:if="{{shopReviews}}">
+    <block wx:for="{{shopReviews}}" wx:key="_id">
+      <view class="review-item" bindtap="goToReview" data-_id="{{item._id}}">
+        <view class="review-header">
+          <view class="reviewer-info">
+            <text>👤</text>
+            <text class="reviewer-name">{{item.reviewerName}}</text>
+          </view>
+          <view class="rating">
+            <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this" wx:for-item="star">
+              {{item.rating >= star ? '⭐' : ''}}
+            </text>
+          </view>
+        </view>
+        <view class="review-content">{{item.content}}</view>
+        <view class="review-footer">
+          <text class="review-time">{{item.time}}</text>
+          <!-- 如果是多店评论，显示提示 -->
+          <text class="multi-shop-hint" wx:if="{{item.shopNames && item.shopNames.length > 1}}">该评论还提到了其他店铺</text>
+        </view>
+      </view>
+    </block>
+  </view>
+  <!-- 暂无评价 -->
+  <view class="empty-reviews" wx:else="">
+      <text>暂无顾客评价</text>
+    </view>
 </view>
 
 <!-- 未找到店铺 -->

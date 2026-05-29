@@ -90,10 +90,12 @@ Page({
   },
 
   goToCollection() {
-    wx.showToast({
-      title: '收藏功能开发中',
-      icon: 'none',
-      duration: 2000
+    if (!this.data.isLogin) {
+      wx.showToast({ title: '请先登录', icon: 'none' })
+      return
+    }
+    wx.navigateTo({
+      url: '/pages/MyFavorites/MyFavorites',
     })
   },
 

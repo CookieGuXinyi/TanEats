@@ -18,7 +18,10 @@ Page({
       description: '',
       imageUrl: ''
     },
-    editingProductId: null
+    editingProductId: null,
+
+    // 店铺评论
+    shopReviews: [],
   },
 
   onShow() {
@@ -64,11 +67,55 @@ Page({
       this.setData({ products: productRes.data })
       wx.hideLoading()
       
+      this.loadShopReviews()
     } catch (err) {
       wx.hideLoading()
       console.error('加载失败', err)
       wx.showToast({ title: '加载失败', icon: 'none' })
     }
+  },
+
+  // 加载店铺相关评论
+  async loadShopReviews() {
+    const { shop } = this.data
+    if (!shop) return
+
+    try {
+      const db = wx.cloud.database()
+      const _ = db.command
+      
+      // 查询包含当前店铺的评论（shopIds 数组中包含当前店铺ID）
+      const res = await db.collection('reviews')
+        .where({
+          shopIds: _.in([shop._id])
+        })
+        .orderBy('createTime', 'desc')
+        .limit(20)
+        .get()
+      
+      const reviews = res.data.map(item => ({
+        ...item,
+        time: this.formatTime(item.createTime)
+      }))
+      
+      this.setData({ shopReviews: reviews })
+      console.log(`共查询到${reviews.length}条评论`)
+      console.log(`${reviews}`)
+      console.log(`${this.shopReviews}`)
+    } catch (err) {
+      console.error('加载评论失败', err)
+    }
+  },
+
+  // 格式化时间
+  formatTime(timeStr) {
+    if (!timeStr) return ''
+    const date = new Date(timeStr)
+    const month = date.getMonth() + 1
+    const day = date.getDate()
+    const hour = date.getHours()
+    const minute = date.getMinutes()
+    return `${month}月${day}日 ${hour}:${minute}`
   },
 
   // 判断当前是否在营业时间内（支持星期 + 时间段）
@@ -363,6 +410,14 @@ Page({
       console.error('更新状态失败', err)
       wx.showToast({ title: '操作失败', icon: 'error' })
     }
+  },
+
+  goToReview(e) {
+    const id = e.currentTarget.dataset._id
+    console.log(`${id}`)
+    wx.navigateTo({
+      url: `/pages/ReviewDetail/ReviewDetail?id=${id}`,
+    })
   },
 
   goToVendorRegister() {

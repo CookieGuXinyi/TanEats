@@ -1,4 +1,4 @@
-<!--pages/Search/Search.wxml-->
+<!--pages/Search_stall/Search_stall.wxml-->
 <view class="container">
   <!-- 搜索头部 -->
   <view class="search-hero">
@@ -16,22 +16,6 @@
         focus
       />
       <text class="clear-btn" wx:if="{{searchKeyword}}" bindtap="clearSearch">×</text>
-    </view>
-  </view>
-
-  <!-- 搜索概览 -->
-  <view class="summary-card">
-    <view class="summary-item">
-      <text class="summary-value">{{summary.count}}</text>
-      <text class="summary-label">匹配摊位</text>
-    </view>
-    <view class="summary-item">
-      <text class="summary-value">{{summary.avgWait}}min</text>
-      <text class="summary-label">平均等待</text>
-    </view>
-    <view class="summary-item">
-      <text class="summary-value">{{summary.couponCount}}</text>
-      <text class="summary-label">可用优惠</text>
     </view>
   </view>
 
@@ -80,7 +64,7 @@
   </view>
 
   <!-- 筛选 -->
-  <scroll-view class="filter-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+  <!-- <scroll-view class="filter-scroll" scroll-x enhanced show-scrollbar="{{false}}">
     <view class="filter-list">
       <view
         class="filter-item {{activeFilter === item.key ? 'active' : ''}}"
@@ -93,7 +77,23 @@
         <text>{{item.label}}</text>
       </view>
     </view>
-  </scroll-view>
+  </scroll-view> -->
+
+  <!-- 搜索概览 -->
+  <view class="summary-card" wx-if="{{searchKeyword}}">
+    <view class="summary-item">
+      <text class="summary-value">{{summary.count}}</text>
+      <text class="summary-label">匹配摊位</text>
+    </view>
+    <view class="summary-item">
+      <text class="summary-value">{{summary.avgWait}}min</text>
+      <text class="summary-label">平均等待</text>
+    </view>
+    <view class="summary-item">
+      <text class="summary-value">{{summary.couponCount}}</text>
+      <text class="summary-label">可用优惠</text>
+    </view>
+  </view>
 
   <!-- 排序 -->
   <view class="sort-card">
@@ -105,17 +105,6 @@
       bindtap="selectSort"
     >
       {{item.label}}
-    </view>
-  </view>
-
-  <!-- AI 搜索助手 -->
-  <view class="ai-card" bindtap="askAi">
-    <view class="card-title">
-      <text>🤖</text>
-      <text>让吃货机器人帮你选</text>
-    </view>
-    <view class="ai-preview">
-      输入预算、口味或时间要求，AI 会结合排队人数、优惠券、销量和评价给出建议。
     </view>
   </view>
 

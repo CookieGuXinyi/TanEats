@@ -169,7 +169,17 @@ Page({
         isMultiShop: this.data.selectedShops.length > 1
       }
       
+      // 1. 保存评论
       await db.collection('reviews').add({ data: reviewData })
+      
+      // 2. 更新所有关联店铺的评分
+      const updatePromises = this.data.selectedShops.map(shop => {
+        return wx.cloud.callFunction({
+          name: 'updateStallRating',
+          data: { stallId: shop._id }
+        })
+      })
+      await Promise.all(updatePromises)
       
       wx.hideLoading()
       wx.showToast({ title: '发布成功', icon: 'success' })

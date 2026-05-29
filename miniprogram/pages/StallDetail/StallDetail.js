@@ -4,7 +4,8 @@ Page({
     stallId: '',
     stall: null,
     isOpen: false,
-    products: []
+    products: [],
+    isFavorited: false
   },
 
   onLoad(options) {
@@ -12,6 +13,7 @@ Page({
     if (id) {
       this.setData({ stallId: id })
       this.loadStallDetail()
+      this.checkFavoriteStatus()
     } else {
       wx.showToast({ title: '参数错误', icon: 'none' })
     }
@@ -115,6 +117,80 @@ Page({
     }
   },
 
+  // 新增：检查是否已收藏
+  async checkFavoriteStatus() {
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    const stallId = this.data.stallId;
+    
+    if (!userInfo._id || !stallId) {
+      return;
+    }
+    
+    try {
+      const db = wx.cloud.database();
+      const res = await db.collection('favorites').where({
+        userId: userInfo._id,
+        stallId: stallId
+      }).get();
+      
+      this.setData({ isFavorited: res.data.length > 0 });
+    } catch (err) {
+      console.error('检查收藏状态失败', err);
+    }
+  },
+
+  // 新增：切换收藏
+  async toggleFavorite() {
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    const stallId = this.data.stallId;
+    
+    if (!userInfo._id) {
+      wx.showToast({ title: '请先登录', icon: 'none' });
+      return;
+    }
+    
+    try {
+      const db = wx.cloud.database();
+      
+      if (this.data.isFavorited) {
+        // 取消收藏
+        await db.collection('favorites').where({
+          userId: userInfo._id,
+          stallId: stallId
+        }).remove();
+        
+        this.setData({ isFavorited: false });
+        wx.showToast({ title: '已取消收藏', icon: 'none' });
+      } else {
+        // 添加收藏
+        await db.collection('favorites').add({
+          data: {
+            userId: userInfo._id,
+            stallId: stallId,
+            createTime: new Date()
+          }
+        });
+        
+        this.setData({ isFavorited: true });
+        wx.showToast({ title: '已收藏', icon: 'success' });
+      }
+      
+      // 同步更新本地缓存（供搜索页使用）
+      const cachedIds = wx.getStorageSync('favoriteStallIds') || [];
+      let newIds;
+      if (this.data.isFavorited) {
+        newIds = [...cachedIds, stallId];
+      } else {
+        newIds = cachedIds.filter(id => id !== stallId);
+      }
+      wx.setStorageSync('favoriteStallIds', newIds);
+      
+    } catch (err) {
+      console.error('收藏操作失败', err);
+      wx.showToast({ title: '操作失败', icon: 'error' });
+    }
+  },
+  
   // 添加到购物车（TODO：待后续完善）
   addToCart(e) {
     const product = e.currentTarget.dataset.product

@@ -86,6 +86,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+  margin-top: 16px;
   font-size: 16px;
   font-weight: 600;
 }
@@ -299,4 +300,81 @@
 .modal-confirm {
   color: #ff7a1c;
   font-weight: 600;
+}
+
+/* 评价列表 */
+.review-list {
+  background: white;
+  border-radius: 20px;
+  padding: 0px 16px 0px 16px;
+  margin-bottom: 16px;
+}
+
+.review-item {
+  padding: 12px 0;
+  border-bottom: 0.5px solid #f0f0f0;
+}
+
+.review-item:last-child {
+  border-bottom: none;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.reviewer-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reviewer-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.rating {
+  display: flex;
+  gap: 2px;
+}
+
+.rating text {
+  font-size: 14px;
+}
+
+.review-content {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.review-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.review-time {
+  font-size: 11px;
+  color: #999;
+}
+
+.multi-shop-hint {
+  font-size: 11px;
+  color: #ff7a1c;
+  background: #fff1e6;
+  padding: 8px 12px;
+  border-radius: 12px;
+}
+
+.empty-reviews {
+  text-align: center;
+  padding: 10px;
+  color: #999;
+  font-size: 13px;
 }

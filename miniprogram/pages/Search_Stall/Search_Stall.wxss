@@ -1,4 +1,4 @@
-/* pages/Search/Search.wxss */
+/* pages/Search_stall/Search_stall.wxss */
 .container {
   padding: 12px 16px;
 }
@@ -78,7 +78,6 @@
 }
 
 .card,
-.ai-card,
 .result-card {
   background: white;
   border-radius: 20px;
@@ -179,16 +178,6 @@
   background: #ff7a1c;
   color: white;
   font-weight: 600;
-}
-
-.ai-preview {
-  background: #f0f9ff;
-  border-radius: 16px;
-  padding: 12px;
-  margin-top: 12px;
-  font-size: 13px;
-  color: #0066cc;
-  line-height: 1.5;
 }
 
 .result-item {

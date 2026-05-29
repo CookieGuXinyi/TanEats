@@ -1,0 +1,162 @@
+<!--pages/AdminReview/AdminReview.wxml-->
+<view class="container">
+  
+  <!-- 统计卡片 -->
+  <view class="stats-card">
+    <view class="stat-item">
+      <text class="stat-value">{{pendingCount}}</text>
+      <text class="stat-label">待审核</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-value">{{approvedCount}}</text>
+      <text class="stat-label">已通过</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-value">{{rejectedCount}}</text>
+      <text class="stat-label">已拒绝</text>
+    </view>
+  </view>
+
+  <!-- 标签页切换 -->
+  <view class="tab-bar">
+    <view 
+      class="tab-item {{currentTab === 'pending' ? 'active' : ''}}" 
+      bindtap="switchTab" 
+      data-tab="pending">
+      待审核 ({{pendingCount}})
+    </view>
+    <view 
+      class="tab-item {{currentTab === 'approved' ? 'active' : ''}}" 
+      bindtap="switchTab" 
+      data-tab="approved">
+      已通过
+    </view>
+    <view 
+      class="tab-item {{currentTab === 'rejected' ? 'active' : ''}}" 
+      bindtap="switchTab" 
+      data-tab="rejected">
+      已拒绝
+    </view>
+  </view>
+
+  <!-- 申请列表 -->
+  <view class="application-list">
+    <block wx:for="{{applications}}" wx:key="_id">
+      <view class="application-card">
+        <!-- 头部 -->
+        <view class="card-header">
+          <view class="shop-info">
+            <text class="shop-name">{{item.shopName}}</text>
+            <text class="shop-category">{{item.category}}</text>
+          </view>
+          <view class="status-badge {{item.status}}">
+            {{item.status === 'pending' ? '待审核' : (item.status === 'approved' ? '已通过' : '已拒绝')}}
+          </view>
+        </view>
+
+        <!-- 申请信息 -->
+        <view class="card-info">
+          <view class="info-row">
+            <text>👤 申请人：</text>
+            <text>{{item.applicantName}}</text>
+          </view>
+          <view class="info-row">
+            <text>📱 联系电话：</text>
+            <text>{{item.applicantPhone}}</text>
+          </view>
+          <view class="info-row">
+            <text>⏰ 营业时间：</text>
+            <text>{{item.businessHours}}</text>
+          </view>
+          <view class="info-row">
+            <text>📍 店铺位置：</text>
+            <text>{{item.location}}</text>
+          </view>
+          <view class="info-row" wx:if="{{item.description}}">
+            <text>📝 店铺简介：</text>
+            <text>{{item.description}}</text>
+          </view>
+          <view class="info-row">
+            <text>📅 提交时间：</text>
+            <text>{{item.submitTimeFormatted}}</text>
+          </view>
+        </view>
+
+        <!-- 证件图片 -->
+        <view class="license-section" wx:if="{{item.licenseImages && item.licenseImages.length > 0}}">
+          <text class="section-label">📎 证件照片：</text>
+          <view class="license-images">
+            <image 
+              wx:for="{{item.licenseImages}}" 
+              wx:key="index" 
+              src="{{item}}" 
+              mode="aspectFill"
+              bindtap="previewImage"
+              data-url="{{item}}">
+            </image>
+          </view>
+        </view>
+
+        <!-- 微信群二维码 -->
+        <view class="qrcode-section" wx:if="{{item.qrCodeUrl}}">
+          <text class="section-label">💬 微信群二维码：</text>
+          <image 
+            class="qrcode-img" 
+            src="{{item.qrCodeUrl}}" 
+            mode="aspectFill"
+            bindtap="previewImage"
+            data-url="{{item.qrCodeUrl}}">
+          </image>
+        </view>
+
+        <!-- 审核操作按钮（仅待审核状态显示） -->
+        <view class="action-buttons" wx:if="{{item.status === 'pending'}}">
+          <view class="btn reject" bindtap="rejectApplication" data-id="{{item._id}}">
+            拒绝
+          </view>
+          <view class="btn approve" bindtap="approveApplication" data-id="{{item._id}}">
+            通过并创建店铺
+          </view>
+        </view>
+
+        <!-- 审核意见（已拒绝时显示） -->
+        <view class="review-comment" wx:if="{{item.status === 'rejected' && item.reviewComment}}">
+          <text>💬 审核意见：{{item.reviewComment}}</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{applications.length === 0 && !loading}}">
+      <text class="empty-icon">📋</text>
+      <text class="empty-text">暂无{{currentTab === 'pending' ? '待审核' : (currentTab === 'approved' ? '已通过' : '已拒绝')}}申请</text>
+    </view>
+
+    <!-- 加载中 -->
+    <view class="loading-state" wx:if="{{loading}}">
+      <text>加载中...</text>
+    </view>
+  </view>
+
+</view>
+
+<!-- 拒绝弹窗 -->
+<view class="modal-mask" wx:if="{{showRejectModal}}" bindtap="closeRejectModal">
+  <view class="modal-container" catchtap="">
+    <view class="modal-title">拒绝申请</view>
+    <view class="modal-content">
+      <textarea 
+        class="reject-input" 
+        placeholder="请输入拒绝原因（选填）" 
+        bindinput="onRejectReasonInput"
+        value="{{rejectReason}}"
+        maxlength="200"
+      />
+      <view class="char-count">{{rejectReason.length}}/200</view>
+    </view>
+    <view class="modal-buttons">
+      <view class="modal-cancel" bindtap="closeRejectModal">取消</view>
+      <view class="modal-confirm" bindtap="confirmReject">确认拒绝</view>
+    </view>
+  </view>
+</view>

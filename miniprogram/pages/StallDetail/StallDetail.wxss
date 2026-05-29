@@ -66,6 +66,28 @@
   color: white;
 }
 
+/* 收藏按钮 */
+.favorite-btn {
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+  transition: all 0.2s;
+}
+
+.favorite-btn.active {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.favorite-btn text {
+  line-height: 1;
+}
+
 /* 信息卡片 */
 .info-card {
   background: white;

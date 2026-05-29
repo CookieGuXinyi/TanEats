@@ -11,10 +11,17 @@
         <text class="status {{isOpen ? 'open' : 'closed'}}">{{isOpen ? '营业中' : '已打烊'}}</text>
       </view>
     </view>
+    <view class="favorite-btn {{isFavorited ? 'active' : ''}}" bindtap="toggleFavorite">
+      <text>{{isFavorited ? '❤️' : '♡'}}</text>
+    </view>
   </view>
 
   <!-- 营业信息卡片 -->
   <view class="info-card">
+    <view class="info-row">
+      <text>⭐ 店铺评分</text>
+      <text class="rating-value">{{stall.rating || 0}}分</text>
+    </view>
     <view class="info-row">
       <text>⏰ 营业时间</text>
       <text>{{stall.businessHours}}</text>
