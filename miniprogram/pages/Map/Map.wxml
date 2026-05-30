@@ -87,7 +87,7 @@
         <view class="stall-name">{{selectedStall.name}}</view>
         <view class="stall-meta">{{selectedStall.category}} · {{selectedStall.distance}}</view>
       </view>
-      <view class="status-pill">{{selectedStall.status}}</view>
+      <view class="status-pill {{selectedStall.isOpen ? 'open' : 'closed'}}">{{selectedStall.status}}</view>
     </view>
 
     <view class="stall-data">
@@ -127,20 +127,6 @@
         <text>📹</text>
         <text>{{selectedStall.isLive ? '看直播' : '暂无直播'}}</text>
       </view>
-    </view>
-  </view>
-
-  <!-- AI 推荐 -->
-  <view class="ai-card" bindtap="askAi">
-    <view class="flex-between">
-      <view class="card-title">
-        <text>🤖</text>
-        <text>AI 路线建议</text>
-      </view>
-      <text class="more-text">问一问 ></text>
-    </view>
-    <view class="ai-preview">
-      根据排队人数和优惠信息，推荐先买椰子冻，再去周姐炸串拼单，预计节省 8 分钟。
     </view>
   </view>
 

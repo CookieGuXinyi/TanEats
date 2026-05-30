@@ -1,16 +1,50 @@
 // pages/index/index.js
 Page({
   data: {
-    hotStalls: [
-      { _id: '21dd03466a11a95a0051231173d42119', name: '周姐炸串', isLive: true, queue: 3 },
-      { _id: 'adk3jcn3d3n4ec', name: '柳州螺蛳粉', isLive: false, queue: 7 },
-      { _id: 'ladcnk5jdcs78cdn', name: '椰子冻小屋', isLive: false, queue: 0 },
-      { _id: 'f24c8d6a6a0da4f10104929d33cb5416', name: '顾氏饮品铺', isLive: false, queue: 4}
-    ]
+    hotStalls: []
   },
 
   onLoad() {
     console.log('首页加载');
+    this.loadHotStalls();
+  },
+
+  // 从数据库获取评分前4的店铺
+  async loadHotStalls() {
+    try {
+      const db = wx.cloud.database();
+      const _ = db.command;
+      
+      // 查询所有激活的店铺，按评分降序排列，取前4条
+      const res = await db.collection('stalls')
+        .where({
+          status: 'active'
+        })
+        .orderBy('rating', 'desc')
+        .limit(4)
+        .get();
+      
+      // 格式化数据，添加模拟的排队人数（后续对接订单系统）
+      const hotStalls = res.data.map(stall => ({
+        _id: stall._id,
+        name: stall.shopName,
+        isLive: false,  // 直播功能暂未实现
+        queue: Math.floor(Math.random() * 8)  // 临时随机排队人数
+      }));
+      
+      this.setData({ hotStalls });
+      console.log('热门店铺加载成功', hotStalls);
+      
+    } catch (err) {
+      console.error('加载热门店铺失败', err);
+      // 降级：使用默认数据
+      this.setData({
+        hotStalls: [
+          { _id: '1', name: '周姐炸串', isLive: false, queue: 3 },
+          { _id: '2', name: '柳州螺蛳粉', isLive: false, queue: 5 }
+        ]
+      });
+    }
   },
 
   goToAiTalk() {

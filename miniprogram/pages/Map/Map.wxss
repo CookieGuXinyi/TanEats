@@ -36,7 +36,6 @@
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.24);
   display: flex;
-  align-items: center;
   justify-content: center;
   font-size: 34px;
   flex-shrink: 0;
@@ -167,7 +166,6 @@
 }
 
 .stall-card,
-.ai-card,
 .list-card {
   background: #ffffff;
   border-radius: 20px;
@@ -196,12 +194,20 @@
 }
 
 .status-pill {
-  background: #e8f8ee;
-  color: #1aad19;
   border-radius: 30px;
   padding: 5px 10px;
   font-size: 12px;
   flex-shrink: 0;
+}
+
+.status-pill.open {
+  background: #e8f5e9;
+  color: #4caf50;
+}
+
+.status-pill.closed {
+  background: #eeeeee;
+  color: #999999;
 }
 
 .stall-data {
@@ -287,16 +293,6 @@
   display: flex;
   align-items: center;
   gap: 6px;
-}
-
-.ai-preview {
-  background: #f0f9ff;
-  border-radius: 16px;
-  padding: 12px;
-  margin-top: 12px;
-  font-size: 13px;
-  color: #0066cc;
-  line-height: 1.5;
 }
 
 .more-text {
