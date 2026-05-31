@@ -1,0 +1,45 @@
+<!--pages/OrderConfirm/OrderConfirm.wxml-->
+<view class="container">
+  
+  <!-- 店铺信息 -->
+  <view class="shop-card" wx:for="{{orderGroups}}" wx:key="stallId">
+    <view class="shop-name">{{item.stallName}}</view>
+    <view class="product-list">
+      <view class="product-item" wx:for="{{item.products}}" wx:key="productId">
+        <text>{{item.productName}} x{{item.quantity}}</text>
+        <text>¥{{item.price * item.quantity}}</text>
+      </view>
+    </view>
+    <view class="shop-total">
+      <text>小计</text>
+      <text class="price">¥{{item.total}}</text>
+    </view>
+  </view>
+  
+  <!-- 取餐时间 -->
+  <view class="info-card">
+    <view class="info-title">取餐时间</view>
+    <picker mode="time" start="10:00" end="22:00" value="{{pickupTime}}" bindchange="onPickupTimeChange">
+      <view class="picker-item">
+        <text>⏰ {{pickupTime || '请选择取餐时间'}}</text>
+        <text>▼</text>
+      </view>
+    </picker>
+  </view>
+  
+  <!-- 备注 -->
+  <view class="info-card">
+    <view class="info-title">备注（选填）</view>
+    <textarea placeholder="口味偏好、忌口等" bindinput="onRemarkInput" maxlength="100"/>
+  </view>
+  
+  <!-- 合计 -->
+  <view class="total-card">
+    <text>共{{totalQuantity}}件商品，合计</text>
+    <text class="total-price">¥{{totalPrice}}</text>
+  </view>
+  
+  <!-- 提交按钮 -->
+  <button class="submit-btn" bindtap="submitOrder">提交订单</button>
+  
+</view>

@@ -191,13 +191,60 @@ Page({
     }
   },
   
-  // 添加到购物车（TODO：待后续完善）
-  addToCart(e) {
+  // 添加到购物车
+  async addToCart(e) {
     const product = e.currentTarget.dataset.product
-    wx.showToast({
-      title: `购物车/订单功能开发中`,
-      icon: 'none',
-      duration: 1000
-    })
+    const userInfo = wx.getStorageSync('userInfo') || {}
+    
+    if (!userInfo._id) {
+      wx.showToast({ title: '请先登录', icon: 'none' })
+      return
+    }
+    
+    wx.showLoading({ title: '添加中...' })
+    
+    try {
+      const db = wx.cloud.database()
+      const _ = db.command
+      
+      // 查询购物车是否已有该商品
+      const existRes = await db.collection('cart').where({
+        userId: userInfo._id,
+        productId: product._id,
+        stallId: this.data.stallId
+      }).get()
+      
+      if (existRes.data.length > 0) {
+        // 已有，数量+1
+        await db.collection('cart').doc(existRes.data[0]._id).update({
+          data: {
+            quantity: _.inc(1),
+            updateTime: new Date()
+          }
+        })
+      } else {
+        // 新增
+        await db.collection('cart').add({
+          data: {
+            userId: userInfo._id,
+            stallId: this.data.stallId,
+            stallName: this.data.stall.shopName,
+            productId: product._id,
+            productName: product.name,
+            price: product.price,
+            quantity: 1,
+            selected: true,
+            createTime: new Date(),
+            updateTime: new Date()
+          }
+        })
+      }
+      wx.hideLoading()
+      wx.showToast({ title: '已加入购物车', icon: 'success' })
+    } catch (err) {
+      wx.hideLoading()
+      console.error('加购失败', err)
+      wx.showToast({ title: '添加失败', icon: 'error' })
+    }
   }
 })

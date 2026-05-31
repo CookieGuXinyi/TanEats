@@ -1,0 +1,87 @@
+<!--pages/Cart/Cart.wxml-->
+<view class="container">
+    
+  <!-- 未登录状态 -->
+  <view class="unlogin-container" wx:if="{{!isLogin}}">
+    <view class="unlogin-content">
+      <text class="unlogin-icon">🛒</text>
+      <text class="unlogin-title">购物车空空如也</text>
+      <text class="unlogin-desc">登录后查看加入的商品</text>
+      <view class="login-btn" bindtap="goToLogin">去登录</view>
+    </view>
+  </view>
+
+  <!-- 已登录，但购物车空状态 -->
+  <view class="empty-state" wx:elif="{{cartGroups.length === 0}}">
+    <text class="empty-icon">🛒</text>
+    <text class="empty-text">购物车空空如也</text>
+    <text class="empty-desc">去美食街逛逛，添加些好吃的吧~</text>
+    <view class="go-search-btn" bindtap="goToSearch">去逛逛</view>
+  </view>
+
+  <!-- 已登录且有商品，按店铺分组 -->
+  <block wx:else>
+    <!-- 全选栏 -->
+    <view class="select-all-bar">
+      <view class="checkbox {{allSelected ? 'checked' : ''}}" bindtap="toggleSelectAll">
+        <text wx:if="{{allSelected}}">✓</text>
+      </view>
+      <text>全选</text>
+    </view>
+
+    <block wx:for="{{cartGroups}}" wx:key="stallId">
+      <view class="shop-card">
+        <view class="shop-header">
+          <!-- 店铺全选按钮 -->
+          <view class="shop-select">
+            <view class="checkbox {{item.selected && item.isOpen ? 'checked' : ''}} {{!item.isOpen ? 'disabled' : ''}}" data-stall="{{item.stallId}}" bindtap="{{item.isOpen ? 'toggleShopSelect' : ''}}">
+              <text wx:if="{{item.selected && item.isOpen}}">✓</text>
+            </view>
+            <view class="shop-name {{!item.isOpen ? 'closed-text' : ''}}">{{item.stallName}}</view>
+          </view>
+          <view class="shop-status {{item.isOpen ? 'open' : 'closed'}}">
+            {{item.isOpen ? '营业中' : '已打烊'}}
+          </view>
+        </view>
+        
+        <!-- 商品列表 -->
+        <view class="product-list">
+          <view class="product-item  {{!item.isOpen ? 'disabled' : ''}}" wx:for="{{item.products}}" wx:key="productId"  wx:for-item="product" wx:for-index="idx">
+            <!-- 商品选中框 -->
+            <view class="product-checkbox">
+              <view class="checkbox {{product.selected && item.isOpen ? 'checked' : ''}} {{!item.isOpen ? 'disabled' : ''}}" data-stall="{{item.stallId}}" data-product="{{product.productId}}" bindtap="{{item.isOpen ? 'toggleProductSelect' : ''}}">
+                <text wx:if="{{product.selected && item.isOpen}}">✓</text>
+              </view>
+            </view>
+            <view class="product-info">
+              <text class="product-name">{{product.productName}}</text>
+              <text class="product-price">¥{{product.price}}</text>
+            </view>
+            <view class="product-actions">
+              <view class="quantity-btn" bindtap="updateQuantity" data-stall="{{item.stallId}}" data-product="{{product.productId}}" data-delta="{{-1}}">-</view>
+              <text class="quantity">{{product.quantity}}</text>
+              <view class="quantity-btn" bindtap="updateQuantity" data-stall="{{item.stallId}}" data-product="{{product.productId}}" data-delta="{{1}}">+</view>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 打烊提示 -->
+        <view class="closed-tip" wx:if="{{!item.isOpen}}">
+          ⚠️ 该店铺已打烊，无法下单
+        </view>
+      </view>
+    </block>
+  
+    <!-- 底部结算栏 -->
+    <view class="bottom-bar" wx:if="{{cartGroups.length > 0}}">
+      <view class="total-info">
+        <text class="total-label">合计：</text>
+        <text class="total-price">¥{{totalSelectedPrice}}</text>
+      </view>
+      <view class="settle-btn {{canSettle ? 'active' : 'disabled'}}" bindtap="goToOrderConfirm">
+        去结算
+      </view>
+    </view>
+  </block>
+
+</view>

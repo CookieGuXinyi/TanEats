@@ -16,7 +16,11 @@
     "pages/ReviewDetail/ReviewDetail",
     "pages/SearchReview/SearchReview",
     "pages/AdminReview/AdminReview",
-    "pages/MyFavorites/MyFavorites"
+    "pages/MyFavorites/MyFavorites",
+    "pages/Cart/Cart",
+    "pages/OrderConfirm/OrderConfirm",
+    "pages/Orders/Orders",
+    "pages/OrderDetail/OrderDetail"
   ],
   "window": {
     "navigationBarBackgroundColor": "#ffffff",
@@ -45,12 +49,12 @@
         "text": "消息"
       },
       {
-        "pagePath": "pages/Profile/Profile",
-        "text": "我的"
+        "pagePath": "pages/Cart/Cart",
+        "text": "购物车"
       },
       {
-        "pagePath": "pages/AdminReview/AdminReview",
-        "text": "审核"
+        "pagePath": "pages/Profile/Profile",
+        "text": "我的"
       }
     ]
   },

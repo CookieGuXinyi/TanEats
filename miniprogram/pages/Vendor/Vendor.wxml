@@ -55,13 +55,120 @@
     <text>暂无商品，点击上方按钮添加</text>
   </view>
 
+  <!-- 订单管理 -->
+  <view class="section-title">
+    <text>📋 订单管理</text>
+    <view class="add-btn" bindtap="refreshOrders">刷新</view>
+  </view>
+
+  <!-- 订单标签页 -->
+  <view class="order-tabs" wx:if="{{orders.length > 0 || pendingOrders.length > 0}}">
+    <view class="order-tab {{currentOrderTab === 'pending' ? 'active' : ''}}" bindtap="switchOrderTab" data-tab="pending">
+      待制作 ({{pendingOrders.length}})
+    </view>
+    <view class="order-tab {{currentOrderTab === 'confirmed' ? 'active' : ''}}" bindtap="switchOrderTab" data-tab="confirmed">
+      待取餐 ({{confirmedOrders.length}})
+    </view>
+    <view class="order-tab {{currentOrderTab === 'completed' ? 'active' : ''}}" bindtap="switchOrderTab" data-tab="completed">
+      已完成 ({{completedOrders.length}})
+    </view>
+  </view>
+
+  <!-- 订单列表 -->
+  <view class="order-list" wx:if="{{currentOrderTab === 'pending' && pendingOrders.length > 0}}">
+    <view class="order-card" wx:for="{{pendingOrders}}" wx:key="_id">
+      <view class="order-header">
+        <text class="order-no">{{item.orderNo}}</text>
+        <text class="order-status pending">待制作</text>
+      </view>
+      <view class="order-user">
+        <text>{{item.userName}}</text>
+        <text>{{item.userPhone}}</text>
+      </view>
+      <view class="order-items">
+        <text wx:for="{{item.items}}" wx:key="productId">
+          {{item.productName}} x{{item.quantity}}
+        </text>
+      </view>
+      <view class="order-info">
+        <text>取餐时间: {{item.pickupTime || '随时'}}</text>
+        <text class="order-amount">¥{{item.totalAmount}}</text>
+      </view>
+      <view class="order-remark" wx:if="{{item.remark}}">
+        📝 备注: {{item.remark}}
+      </view>
+      <view class="order-actions" wx:if="{{item.status === 'pending'}}">
+        <view class="order-btn complete" bindtap="confirmOrder" data-id="{{item._id}}">✅ 制作完成</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="order-list" wx:if="{{currentOrderTab === 'confirmed' && confirmedOrders.length > 0}}">
+    <view class="order-card" wx:for="{{confirmedOrders}}" wx:key="_id">
+      <view class="order-header">
+        <text class="order-no">{{item.orderNo}}</text>
+        <text class="order-status confirmed">待取餐</text>
+      </view>
+      <view class="order-user">
+        <text>{{item.userName}}</text>
+        <text>{{item.userPhone}}</text>
+      </view>
+      <view class="order-items">
+        <text wx:for="{{item.items}}" wx:key="productId">
+          {{item.productName}} x{{item.quantity}}
+        </text>
+      </view>
+      <view class="order-info">
+        <text>取餐时间: {{item.pickupTime || '随时'}}</text>
+        <text class="order-amount">¥{{item.totalAmount}}</text>
+      </view>
+      <view class="order-remark" wx:if="{{item.remark}}">
+        📝 备注: {{item.remark}}
+      </view>
+      <view class="order-actions">
+        <view class="order-btn pickup" bindtap="completeOrder" data-id="{{item._id}}">✅ 确认取餐</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="order-list" wx:if="{{currentOrderTab === 'completed' && completedOrders.length > 0}}">
+    <view class="order-card completed" wx:for="{{completedOrders}}" wx:key="_id">
+      <view class="order-header">
+        <text class="order-no">{{item.orderNo}}</text>
+        <text class="order-status completed">已完成</text>
+      </view>
+      <view class="order-user">
+        <text>{{item.userName}}</text>
+        <text>{{item.userPhone}}</text>
+      </view>
+      <view class="order-items">
+        <text wx:for="{{item.items}}" wx:key="productId">
+          {{item.productName}} x{{item.quantity}}
+        </text>
+      </view>
+      <view class="order-info">
+        <text>取餐时间: {{item.pickupTime || '随时'}}</text>
+        <text class="order-amount">¥{{item.totalAmount}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 暂无订单 -->
+  <view class="empty-orders" wx:if="{{!loadingOrders && pendingOrders.length === 0 && completedOrders.length === 0}}">
+    <text>📦</text>
+    <text>暂无订单</text>
+  </view>
+
   <!-- 顾客评价 -->
   <view class="section-title">
     <text>💬 顾客评价</text>
+    <view class="toggle-btn" bindtap="toggleReviews">
+      <text>{{showReviews ? '收起 ▲' : '展开 ▼'}}</text>
+    </view>
   </view>
 
   <!-- 评价列表 -->
-  <view class="review-list" wx:if="{{shopReviews}}">
+  <view class="review-list" wx:if="{{showReviews && shopReviews}}">
     <block wx:for="{{shopReviews}}" wx:key="_id">
       <view class="review-item" bindtap="goToReview" data-_id="{{item._id}}">
         <view class="review-header">
@@ -85,9 +192,9 @@
     </block>
   </view>
   <!-- 暂无评价 -->
-  <view class="empty-reviews" wx:else="">
-      <text>暂无顾客评价</text>
-    </view>
+  <view class="empty-reviews" wx:elif="{{showReviews && (!shopReviews || shopReviews.length === 0)}}">
+    <text>暂无顾客评价</text>
+  </view>
 </view>
 
 <!-- 未找到店铺 -->

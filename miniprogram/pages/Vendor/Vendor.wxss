@@ -378,3 +378,155 @@
   color: #999;
   font-size: 13px;
 }
+
+.toggle-btn {
+  padding: 10rpx 20rpx;
+  font-size: 26rpx;
+  color: #ff7a1c;
+}
+
+/* 订单标签页 */
+.order-tabs {
+  display: flex;
+  background: white;
+  border-radius: 40px;
+  margin: 12px 0;
+  padding: 4px;
+}
+
+.order-tab {
+  flex: 1;
+  text-align: center;
+  padding: 10px 0;
+  font-size: 14px;
+  border-radius: 40px;
+  color: #666;
+}
+
+.order-tab.active {
+  background: #ff7a1c;
+  color: white;
+}
+
+/* 订单卡片 */
+.order-card {
+  background: white;
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.order-card.completed {
+  opacity: 0.7;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 0.5px solid #f0f0f0;
+  margin-bottom: 10px;
+}
+
+.order-no {
+  font-size: 12px;
+  color: #999;
+}
+
+.order-status {
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.order-status.pending {
+  background: #fff3e0;
+  color: #ff9800;
+}
+
+.order-status.confirmed {
+  background: #fff3e0;
+  color: #ff9800;
+}
+
+.order-status.completed {
+  background: #e8f5e9;
+  color: #4caf50;
+}
+
+.order-user {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.order-items {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.order-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 0.5px solid #f0f0f0;
+  font-size: 13px;
+}
+
+.order-amount {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ff7a1c;
+}
+
+.order-remark {
+  font-size: 12px;
+  color: #999;
+  background: #f5f5f5;
+  padding: 8px;
+  border-radius: 12px;
+  margin-top: 10px;
+}
+
+.order-actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.order-btn {
+  padding: 8px 20px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.order-btn.complete {
+  background: #e8f5e9;
+  color: #4caf50;
+}
+
+.order-btn.pickup {
+  background: #e8f5e9;
+  color: #4caf50;
+}
+
+.empty-orders {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}
+
+.empty-orders text:first-child {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 12px;
+}

@@ -119,9 +119,9 @@
         <text>📞</text>
         <text>联系摊主</text>
       </view>
-      <view class="action-btn" bindtap="joinGroupOrder">
-        <text>👥</text>
-        <text>发起拼单</text>
+      <view class="action-btn" bindtap="goToOrder">
+        <text>📋</text>
+        <text>去点单</text>
       </view>
       <view class="action-btn" bindtap="viewLive">
         <text>📹</text>

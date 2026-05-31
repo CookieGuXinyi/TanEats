@@ -84,10 +84,10 @@
       </view>
       <text>></text>
     </view>
-    <view class="menu-item" bindtap="goToHistory">
+    <view class="menu-item" bindtap="goToAdmin">
       <view class="menu-left">
         <text>🕐</text>
-        <text>浏览记录</text>
+        <text>店铺审核</text>
       </view>
       <text>></text>
     </view>

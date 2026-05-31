@@ -22,10 +22,22 @@ Page({
 
     // 店铺评论
     shopReviews: [],
+    showReviews: false,
+
+    // 订单
+    orders: [],
+    pendingOrders: [],
+    confirmedOrders: [],
+    completedOrders: [],
+    currentOrderTab: 'pending',
+    loadingOrders: false
   },
 
   onShow() {
     this.loadShopAndProducts()
+    if (this.data.shop) {
+      this.loadOrders()
+    }
   },
 
   // 加载店铺和商品数据
@@ -58,6 +70,7 @@ Page({
       const shop = shopRes.data[0]
       const isOpen = this.checkIsOpen(shop.businessHours)
       this.setData({ shop, isOpen })
+      this.loadOrders()
       
       // 查询该店铺的商品
       const productRes = await db.collection('products').where({
@@ -162,6 +175,134 @@ Page({
     
     // 判断时间是否在范围内
     return currentTotal >= startTotal && currentTotal <= endTotal
+  },
+
+  // 切换评价区域显示/隐藏
+  toggleReviews() {
+    this.setData({
+      showReviews: !this.data.showReviews
+    });
+  },
+
+  // 加载订单
+  async loadOrders() {
+    const { shop } = this.data
+    if (!shop) return
+
+    this.setData({ loadingOrders: true })
+
+    try {
+      const db = wx.cloud.database()
+      const res = await db.collection('orders').where({
+        stallId: shop._id
+      }).orderBy('createTime', 'desc').get()
+
+      const orders = res.data
+      const pendingOrders = orders.filter(o => o.status === 'pending')      // 制作中
+      const confirmedOrders = orders.filter(o => o.status === 'confirmed')  // 待取餐
+      const completedOrders = orders.filter(o => o.status === 'completed')  // 已完成
+
+      this.setData({
+        orders,
+        pendingOrders,
+        confirmedOrders,
+        completedOrders,
+        loadingOrders: false
+      })
+    } catch (err) {
+      console.error('加载订单失败', err)
+      this.setData({ loadingOrders: false })
+    }
+  },
+
+  // 刷新订单
+  refreshOrders() {
+    wx.showToast({ title: '刷新中', icon: 'loading' })
+    this.loadOrders()
+    setTimeout(() => {
+      wx.hideToast()
+    }, 500)
+  },
+
+  // 切换订单标签页
+  switchOrderTab(e) {
+    const tab = e.currentTarget.dataset.tab
+    this.setData({ currentOrderTab: tab })
+  },
+
+  // 制作完成（待取餐）
+  async confirmOrder(e) {
+    const orderId = e.currentTarget.dataset.id
+
+    wx.showModal({
+      title: '确认制作完成',
+      content: '确认该订单已制作完成，通知顾客取餐吗？',
+      success: async (res) => {
+        if (res.confirm) {
+          wx.showLoading({ title: '处理中...' })
+
+          try {
+            const res = await wx.cloud.callFunction({
+              name: 'updateOrderStatus',
+              data: {
+                orderId: orderId,
+                status: 'confirmed'
+              }
+            })
+
+            wx.hideLoading()
+
+            if (res.result.code === 200) {
+              wx.showToast({ title: '已通知取餐', icon: 'success' })
+              this.loadOrders()
+            } else {
+              wx.showToast({ title: res.result.message, icon: 'error' })
+            }
+          } catch (err) {
+            wx.hideLoading()
+            console.error('更新订单失败', err)
+            wx.showToast({ title: '操作失败', icon: 'error' })
+          }
+        }
+      }
+    })
+  },
+
+  // 完成订单（确认取餐）
+  async completeOrder(e) {
+    const orderId = e.currentTarget.dataset.id
+
+    wx.showModal({
+      title: '确认取餐',
+      content: '确认顾客已取餐吗？',
+      success: async (res) => {
+        if (res.confirm) {
+          wx.showLoading({ title: '处理中...' })
+
+          try {
+            const res = await wx.cloud.callFunction({
+              name: 'updateOrderStatus',
+              data: {
+                orderId: orderId,
+                status: 'completed'
+              }
+            })
+
+            wx.hideLoading()
+            if (res.result.code === 200) {
+              wx.showToast({ title: '已完成', icon: 'success' })
+              this.loadOrders()  // 刷新订单列表
+            } else {
+              wx.showToast({ title: res.result.message, icon: 'error' })
+            }
+          } catch (err) {
+            wx.hideLoading()
+            console.error('更新订单失败', err)
+            wx.showToast({ title: '操作失败', icon: 'error' })
+          }
+        }
+      }
+    })
   },
 
   // ========== 店铺信息编辑 ==========

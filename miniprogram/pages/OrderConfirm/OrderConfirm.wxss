@@ -1,0 +1,97 @@
+/* pages/OrderConfirm/OrderConfirm.wxss */
+.container {
+  background-color: #f8f8f8;
+  min-height: 100vh;
+  padding: 12px 16px 100px;
+}
+
+.shop-card {
+  background: white;
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.shop-name {
+  font-size: 16px;
+  font-weight: 600;
+  padding-bottom: 10px;
+  border-bottom: 0.5px solid #f0f0f0;
+  margin-bottom: 10px;
+}
+
+.product-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 14px;
+}
+
+.shop-total {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+  margin-top: 8px;
+  border-top: 0.5px solid #f0f0f0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.shop-total .price {
+  color: #ff7a1c;
+}
+
+.info-card {
+  background: white;
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.info-title {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.picker-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  color: #666;
+}
+
+textarea {
+  width: 100%;
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 14px;
+  min-height: 80px;
+}
+
+.total-card {
+  background: white;
+  border-radius: 20px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.total-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ff7a1c;
+}
+
+.submit-btn {
+  background: #ff7a1c;
+  border-radius: 40px;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+}

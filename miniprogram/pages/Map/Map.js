@@ -375,8 +375,11 @@ Page({
     wx.showToast({ title: '联系功能开发中', icon: 'none' });
   },
 
-  joinGroupOrder() {
-    wx.showToast({ title: '拼单功能开发中', icon: 'none' });
+  goToOrder() {
+    const stallId = this.data.selectedStall.id;
+    wx.navigateTo({
+      url: `/pages/StallDetail/StallDetail?id=${stallId}`,
+    })
   },
 
   viewLive() {

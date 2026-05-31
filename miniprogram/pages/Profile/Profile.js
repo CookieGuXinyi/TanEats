@@ -99,22 +99,21 @@ Page({
     })
   },
 
-  goToHistory() {
-    wx.showToast({
-      title: '浏览记录功能开发中',
-      icon: 'none',
-      duration: 2000
+  goToAdmin() {
+    wx.navigateTo({
+      url: '/pages/AdminReview/AdminReview',
     })
   },
 
   goToOrder(event) {
     const status = event.currentTarget.dataset.status;
-
- wx.showToast({
-      title: `订单功能开发中(${status})`,
-      icon: 'none',
-      duration: 2000
-    })   
+    if (!this.data.isLogin) {
+      wx.showToast({ title: '请先登录', icon: 'none' })
+      return
+    }
+    wx.navigateTo({
+      url: `/pages/Orders/Orders?status=${status}`
+    })
   },
 
   goToResetPW() {
