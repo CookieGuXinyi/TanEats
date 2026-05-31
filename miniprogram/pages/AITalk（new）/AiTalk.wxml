@@ -1,0 +1,81 @@
+<!-- pages/AITalk/AiTalk.wxml -->
+<view class="page">
+  <view class="topbar">
+    <view>
+      <view class="title">AI 点餐助手</view>
+      <view class="subtitle">基于店铺、菜单、订单和评价实时推荐</view>
+    </view>
+    <button class="clear-btn" bindtap="clearChat" disabled="{{loading}}">清空</button>
+  </view>
+
+  <scroll-view
+    class="chat-list"
+    scroll-y
+    scroll-with-animation
+    scroll-into-view="{{scrollIntoView}}"
+  >
+    <view
+      id="{{item.id}}"
+      class="message {{item.role === 'user' ? 'message-user' : 'message-assistant'}}"
+      wx:for="{{messages}}"
+      wx:key="id"
+    >
+      <view class="bubble">
+        <text class="content">{{item.content}}</text>
+
+        <view class="source-shops" wx:if="{{item.sourceShops && item.sourceShops.length > 0}}">
+          <view class="source-title">相关店铺</view>
+          <view
+            class="shop-card"
+            wx:for="{{item.sourceShops}}"
+            wx:for-item="shop"
+            wx:key="id"
+            bindtap="goToShop"
+            data-id="{{shop.id}}"
+          >
+            <view class="shop-main">
+              <text class="shop-name">{{shop.name}}</text>
+              <text class="shop-status {{shop.isOpen ? 'open' : 'closed'}}">{{shop.isOpen ? '营业中' : '已打烊'}}</text>
+            </view>
+            <view class="shop-meta">
+              <text>{{shop.category}}</text>
+              <text>评分 {{shop.rating}}</text>
+              <text>约 {{shop.waitMinutes}} 分钟</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="fallback-tip" wx:if="{{item.usedFallback}}">
+          <text>当前回答使用本地规则兜底生成</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="quick-section" wx:if="{{messages.length <= 1}}">
+    <view
+      class="quick-chip"
+      wx:for="{{quickQuestions}}"
+      wx:key="index"
+      bindtap="useQuickQuestion"
+      data-question="{{item}}"
+    >
+      {{item}}
+    </view>
+  </view>
+
+  <view class="input-panel">
+    <input
+      class="input"
+      placeholder="问问现在吃什么、哪家排队少、预算内怎么选..."
+      value="{{inputValue}}"
+      bindinput="onInput"
+      bindconfirm="sendMessage"
+      confirm-type="send"
+      disabled="{{loading}}"
+    />
+    <button class="send-btn" bindtap="sendMessage" loading="{{loading}}" disabled="{{loading || !inputValue}}">
+      发送
+    </button>
+  </view>
+</view>

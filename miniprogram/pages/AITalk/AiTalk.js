@@ -6,7 +6,8 @@ Page({
     ],
     inputValue: '',
     scrollToView: 'bottom',
-    quickQuestions: ['今晚吃什么', '排队最少的推荐', '今天有什么优惠', '推荐辣的']
+    quickQuestions: ['今晚吃什么', '排队最少的推荐', '今天有什么优惠', '推荐辣的'],
+    loading: false
   },
 
   onLoad() {
@@ -17,9 +18,10 @@ Page({
     this.setData({ inputValue: e.detail.value });
   },
 
-  sendMessage() {
+  async sendMessage() {
     const content = this.data.inputValue.trim();
     if (!content) return;
+    if (this.data.loading) return;
 
     // 添加用户消息
     const userMsg = {
@@ -29,19 +31,73 @@ Page({
       time: this.getCurrentTime()
     };
 
-    // AI 响应（模拟）
-    const aiResponse = this.getAIResponse(content);
-    const aiMsg = {
-      id: Date.now() + 1,
-      content: aiResponse,
+    // 添加加载中的 AI 消息
+    const pendingId = Date.now() + 1;
+    const pendingMsg = {
+      id: pendingId,
+      content: '正在分析中...',
       isUser: false,
       time: this.getCurrentTime()
     };
 
+    const newMessages = [...this.data.messages, userMsg, pendingMsg];
+    
     this.setData({
-      messages: [...this.data.messages, userMsg, aiMsg],
-      inputValue: ''
+      messages: newMessages,
+      inputValue: '',
+      loading: true
     });
+    this.scrollToBottom();
+
+    try {
+      // 获取用户信息
+      const userInfo = wx.getStorageSync('userInfo') || {};
+      
+      // 调用云函数
+      const res = await wx.cloud.callFunction({
+        name: 'aiChat',
+        data: {
+          message: content,
+          userId: userInfo._id || ''
+        }
+      });
+
+      const result = res.result || {};
+      
+      // 重要：使用当前的 newMessages 进行更新，而不是 this.data.messages
+      const updatedMessages = newMessages.map(msg => {
+        if (msg.id === pendingId) {
+          if (result.code === 200) {
+            return { ...msg, content: result.data.answer };
+          } else {
+            return { ...msg, content: result.message || '服务暂时不可用，请稍后再试' };
+          }
+        }
+        return msg;
+      });
+
+      this.setData({
+        messages: updatedMessages,
+        loading: false
+      });
+      
+    } catch (err) {
+      console.error('AI 调用失败', err);
+      
+      // 使用 newMessages 进行更新
+      const updatedMessages = newMessages.map(msg => {
+        if (msg.id === pendingId) {
+          return { ...msg, content: '网络开了点小差，请稍后再试～' };
+        }
+        return msg;
+      });
+
+      this.setData({
+        messages: updatedMessages,
+        loading: false
+      });
+    }
+    
     this.scrollToBottom();
   },
 
@@ -49,17 +105,6 @@ Page({
     const question = e.currentTarget.dataset.question;
     this.setData({ inputValue: question });
     this.sendMessage();
-  },
-
-  getAIResponse(question) {
-    // 模拟 AI 响应，后期可接入真实 AI 接口
-    const responses = [
-      '根据实时数据，推荐您试试"周姐炸串"，目前排队3人，评分4.8！',
-      '今晚"柳州螺蛳粉"有跨店优惠，搭配奶茶立减3元～',
-      '根据您的位置，附近"铁板炒饭"现在排队较少，约5分钟可取。',
-      '推荐您尝尝"酸辣粉"，目前有买一送一活动，热度很高！'
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
   },
 
   getCurrentTime() {
@@ -71,5 +116,14 @@ Page({
     setTimeout(() => {
       this.setData({ scrollToView: 'bottom' });
     }, 100);
+  },
+
+  goToShop(e) {
+    const id = e.currentTarget.dataset.id;
+    if (id) {
+      wx.navigateTo({
+        url: `/pages/StallDetail/StallDetail?id=${id}`
+      });
+    }
   }
 });
