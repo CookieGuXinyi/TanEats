@@ -129,15 +129,33 @@ Page({
         status: 'active'
       }).get();
 
-      const stalls = res.data.map((stall, index) => {
-        // 从地址文本中解析摊位号和区域
+      const stalls = res.data;
+      
+      if (stalls.length === 0) {
+        console.log('暂无摊位');
+        return;
+      }
+      
+      // 获取所有摊位ID
+      const stallIds = stalls.map(s => s._id);
+      
+      // 获取真实排队人数
+      const queueRes = await wx.cloud.callFunction({
+        name: 'getQueueCount',
+        data: { stallIds: stallIds }
+      });
+      
+      const queueMap = queueRes.result.data || {};
+      
+      const formattedStalls = stalls.map((stall, index) => {
         const stallNumber = this.extractStallNumber(stall.location);
-        // 获取对应经纬度
         const coords = this.stallCoordinates[stallNumber] || {
           lat: this.defaultLat,
           lng: this.defaultLng
         };
         const isOpen = this.isShopOpen(stall.businessHours);
+        // 【修改】使用真实排队人数
+        const queue = queueMap[stall._id] || 0;
         
         return {
           id: stall._id,
@@ -146,8 +164,8 @@ Page({
           category: stall.category || '其他',
           latitude: coords.lat,
           longitude: coords.lng,
-          queue: 0,  // 待对接订单系统
-          waitTime: 0,
+          queue: queue,
+          waitTime: queue * 3,
           rating: stall.rating || 0,
           status: isOpen ? '营业中' : '已打烊',
           isLive: false,
@@ -159,8 +177,10 @@ Page({
           tags: []
         };
       });
-      this.setData({ stalls });
-      console.log('加载摊位成功', stalls.length);
+      
+      this.setData({ stalls: formattedStalls });
+      console.log('加载摊位成功', formattedStalls.length);
+      console.log('排队人数统计:', queueMap);
     } catch (err) {
       console.error('加载摊位失败', err);
       // 降级使用模拟数据
@@ -240,7 +260,7 @@ Page({
     const markers = this.createMarkers(visibleStalls);
     const openCount = visibleStalls.filter(item => item.isOpen).length;
     const avgWait = visibleStalls.length && openCount > 0
-      ? Math.round(visibleStalls.filter(item => item.isOpen).reduce((sum, item) => sum + (item.queue * 2), 0) / openCount)
+      ? Math.round(visibleStalls.filter(item => item.isOpen).reduce((sum, item) => sum + item.waitTime, 0) / openCount)
       : 0;
     const couponCount = visibleStalls.filter(item => item.hasCoupon).length;
 
@@ -356,6 +376,7 @@ Page({
     });
   },
 
+  // TODO：暂时未实现
   navigateToStall() {
     const stall = this.data.selectedStall;
     if (!stall) {

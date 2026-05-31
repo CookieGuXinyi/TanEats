@@ -24,12 +24,29 @@ Page({
         .limit(4)
         .get();
       
-      // 格式化数据，添加模拟的排队人数（后续对接订单系统）
-      const hotStalls = res.data.map(stall => ({
+      const stalls = res.data;
+    
+      if (stalls.length === 0) {
+        this.setData({ hotStalls: [] });
+        return;
+      }
+      
+      // 2. 获取摊位ID列表
+      const stallIds = stalls.map(s => s._id);
+      
+      // 3. 调用云函数获取排队人数
+      const queueRes = await wx.cloud.callFunction({
+        name: 'getQueueCount',
+        data: { stallIds: stallIds }
+      });
+      const queueCounts = queueRes.result.data || {};
+      
+      // 4. 格式化数据
+      const hotStalls = stalls.map(stall => ({
         _id: stall._id,
         name: stall.shopName,
         isLive: false,  // 直播功能暂未实现
-        queue: Math.floor(Math.random() * 8)  // 临时随机排队人数
+        queue: queueCounts[stall._id] || 0  // 真实排队人数
       }));
       
       this.setData({ hotStalls });
@@ -72,6 +89,7 @@ Page({
     })
   },
 
+  // TODO：拼单功能尚未实现
   goToOrderGroup() {
     wx.showToast({
       title: '拼单功能开发中',

@@ -172,7 +172,7 @@ Page({
         success: (res) => {
           if (res.confirm) {
             wx.navigateTo({
-              url: '/pages/UserRegister/UserRegister'
+              url: '/pages/Register_User/Register_User'
             })
           }
         }

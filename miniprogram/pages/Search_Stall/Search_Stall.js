@@ -85,7 +85,7 @@ Page({
         productsByShop[p.shopId].push(p)
       })
       
-      // 4. 查询所有评论（用于计算评分和销量）
+      // 4. 查询所有评论
       const reviewRes = await db.collection('reviews')
         .where({
           shopIds: _.in(stallIds)
@@ -102,8 +102,64 @@ Page({
           })
         }
       })
+
+      // 5. 获取真实排队人数（通过云函数）
+      const queueRes = await wx.cloud.callFunction({
+        name: 'getQueueCount',
+        data: { stallIds: stallIds }
+      })
       
-      // 5. 组装数据
+      const queueMap = queueRes.result.data || {}
+
+      // 6. 查询订单数量（用于月销量统计，从完成的订单中统计）
+      const orderRes = await db.collection('orders')
+        .where({
+          stallId: _.in(stallIds),
+          status: 'completed'  // 只统计已完成订单
+        })
+        .get()
+      
+      // 按 stallId 统计月销量
+      const salesMap = {}
+      orderRes.data.forEach(order => {
+        if (!salesMap[order.stallId]) {
+          salesMap[order.stallId] = 0
+        }
+        // 统计商品总数
+        const itemCount = order.items.reduce((sum, item) => sum + item.quantity, 0)
+        salesMap[order.stallId] += itemCount
+      })
+      
+      // 7. 查询店铺被收藏数量
+      const favRes = await db.collection('favorites')
+        .where({
+          stallId: _.in(stallIds)
+        })
+        .get()
+      
+      // 按 stallId 统计收藏数
+      const favoritesMap = {}
+      favRes.data.forEach(fav => {
+        if (!favoritesMap[fav.stallId]) {
+          favoritesMap[fav.stallId] = 0
+        }
+        favoritesMap[fav.stallId]++
+      })
+      
+      // 8. 查询店铺被提及的评论数量（作为 views 的替代）
+      const viewMap = {}
+      reviewRes.data.forEach(review => {
+        if (review.shopIds) {
+          review.shopIds.forEach(shopId => {
+            if (!viewMap[shopId]) {
+              viewMap[shopId] = 0
+            }
+            viewMap[shopId]++
+          })
+        }
+      })
+      
+      // 9. 组装数据
       let results = stalls.map(stall => {
         const products = productsByShop[stall._id] || []
         const reviews = reviewsByShop[stall._id] || []
@@ -115,15 +171,24 @@ Page({
           avgRating = Math.round((sum / reviews.length) * 10) / 10
         }
         
-        // 计算月销量（模拟，实际需要订单表）
-        const monthlySales = products.reduce((sum, p) => sum + (p.salesCount || 0), 0) || Math.floor(Math.random() * 500) + 100
+        // 真实月销量（从订单统计）
+        const monthlySales = salesMap[stall._id] || 0
         
         // 判断是否有优惠（优惠券功能暂缓，先设为 false）
         const hasCoupon = false
         
-        // 排队人数（暂用模拟，后续对接订单）
-        const queue = Math.floor(Math.random() * 8)
-        const waitTime = queue * 2
+        // 排队人数
+        const queue = queueMap[stall._id] || 0
+        const waitTime = queue * 3   // 先模拟，假设每人3分钟
+
+        // 真实收藏数
+        const favoritesCount = favoritesMap[stall._id] || 0
+        
+        // 真实评论数（作为 views 的参考）
+        const reviewsCount = viewMap[stall._id] || 0
+        
+        // 点赞数（暂无，设为0）
+        const likesCount = 0
         
         return {
           id: stall._id,
@@ -135,15 +200,15 @@ Page({
           distance: stall.location || '校园内',
           status: stall.status,
           hasCoupon: hasCoupon,
-          coupon: hasCoupon ? '新客优惠' : '',
-          couponValue: hasCoupon ? 3 : 0,
+          coupon: '',
+          couponValue: 0,
           address: stall.location,
           tags: [],
-          views: Math.floor(Math.random() * 1000) + 100,
-          likes: Math.floor(Math.random() * 200) + 10,
-          favorites: Math.floor(Math.random() * 100) + 5,
+          views: reviewsCount,
+          likes: likesCount,
+          favorites: favoritesCount,
           monthlySales: monthlySales,
-          repeatRate: Math.random() * 0.5 + 0.2,
+          repeatRate: 0,  // 暂无数据
           products: products.map(p => ({
             id: p._id,
             name: p.name,
@@ -168,23 +233,39 @@ Page({
 
   // 计算推荐分
   calculateScore(stall, keyword) {
-    const keywordText = (keyword || '').trim();
-    const productText = stall.products.map(item => item.name).join('');
-    const searchText = `${stall.name}${stall.category}${productText}`;
-    const keywordBoost = keywordText && searchText.indexOf(keywordText) > -1 ? 24 : 0;
+    let score = 0;
+  
+    // 1. 评分（满分 40 分）- 核心指标
+    score += (stall.rating / 5) * 40;
     
-    return Math.round(
-      stall.rating * 14 +
-      stall.monthlySales / 85 +
-      stall.views / 120 +
-      stall.likes / 25 +
-      stall.favorites / 18 +
-      stall.repeatRate * 20 +
-      (stall.hasCoupon ? 12 + stall.couponValue : 0) +
-      (stall.isLive ? 7 : 0) +
-      keywordBoost -
-      stall.queue * 2.2
-    );
+    // 2. 月销量（满分 25 分）- 越多人买越好
+    // 假设月销 500 为满分，超过按满分算
+    const salesScore = Math.min(stall.monthlySales / 500, 1) * 25;
+    score += salesScore;
+    
+    // 3. 收藏数（满分 15 分）
+    const favScore = Math.min(stall.favorites / 20, 1) * 15;
+    score += favScore;
+    
+    // 4. 浏览量/评论数（满分 10 分）
+    const viewScore = Math.min(stall.views / 20, 1) * 10;
+    score += viewScore;
+    
+    // 5. 排队人数（满分 10 分）- 排队人多说明受欢迎，不扣分
+    // 假设排队 10 人为满分
+    const queueScore = Math.min(stall.queue / 10, 1) * 10;
+    score += queueScore;
+
+    // 6. 关键词匹配加分（+5 分）
+    if (keyword) {
+      const searchText = `${stall.name}${stall.category}`.toLowerCase();
+      if (searchText.indexOf(keyword.toLowerCase()) > -1) {
+        score += 5;
+      }
+    }
+    
+    // 确保分数在 0-100 之间
+    return Math.round(Math.min(100, Math.max(0, score)));
   },
 
   getReason(stall) {

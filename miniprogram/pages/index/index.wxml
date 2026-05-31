@@ -40,7 +40,7 @@
   <view class="card">
     <view class="card-title">
       <text>🔥</text>
-      <text>热门推荐</text>
+      <text>热门高分推荐</text>
     </view>
     <view class="stall-item" wx:for="{{hotStalls}}" wx:key="_id" bindtap="goToStallDetail" data-id="{{item._id}}">
       <view class="stall-info">
@@ -51,8 +51,8 @@
     </view>
   </view>
 
-  <!-- 拼单入口 -->
-  <view class="card" bindtap="goToOrderGroup">
+  <!-- TODO：拼单入口 -->
+  <!-- <view class="card" bindtap="goToOrderGroup">
     <view class="flex-between">
       <view class="card-title">
         <text>👥</text>
@@ -64,5 +64,5 @@
       <text class="coupon-tag">炸串+奶茶 减3元</text>
       <text class="coupon-tag">煎饼+烤肠 85折</text>
     </view>
-  </view>
+  </view> -->
 </view>

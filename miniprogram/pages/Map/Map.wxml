@@ -71,12 +71,12 @@
     <view class="map-actions">
       <view class="map-action" bindtap="useCurrentLocation">
         <text>📍</text>
-        <text>定位</text>
+        <text>定位"我"的位置</text>
       </view>
-      <view class="map-action primary" bindtap="navigateToStall">
+      <!-- <view class="map-action primary" bindtap="navigateToStall">
         <text>🧭</text>
         <text>去这里</text>
-      </view>
+      </view> -->
     </view>
   </view>
 
