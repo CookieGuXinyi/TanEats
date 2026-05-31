@@ -22,10 +22,18 @@ Page({
     
     try {
       const db = wx.cloud.database()
+      const _ = db.command 
       const where = { userId: userInfo._id }
       
-      if (this.data.currentTab !== 'all') {
-        where.status = this.data.currentTab === 'pending' ? 'pending' : 'completed'
+      if (this.data.currentTab === 'pending') {
+        // 进行中 tab：同时显示 pending 和 confirmed 状态
+        where.status = _.or([
+          _.eq('pending'),
+          _.eq('confirmed')
+        ])
+      } else if (this.data.currentTab !== 'all') {
+        // 其他 tab（如 completed）按原逻辑
+        where.status = this.data.currentTab
       }
       
       const res = await db.collection('orders')

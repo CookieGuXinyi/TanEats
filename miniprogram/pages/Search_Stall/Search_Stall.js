@@ -462,6 +462,7 @@ Page({
 
   goToOrder(e) {
     const id = e.currentTarget.dataset.id;
-    wx.showToast({ title: '点餐功能开发中', icon: 'none' });
-  }
+    wx.navigateTo({
+      url: `/pages/StallDetail/StallDetail?id=${id}`,
+    })  }
 });
